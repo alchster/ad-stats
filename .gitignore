@@ -1,0 +1,6 @@
+*.swp
+env/
+*/__pycache__/
+*.db
+*.xlsx
+*.py[cod]
