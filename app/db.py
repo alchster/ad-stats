@@ -28,7 +28,7 @@ class DB:
 
     def __init__(self, filename, options={}):
         self.types = get_option_value(options, "types", self.DEFAULT_TYPES)
-        self.drop_tables = get_option_value(options, "drop_tables", False)
+        self.drop_tables = get_option_value(options, "drop_tables", True)
         try:
             self.conn = sqlite3.connect(filename)
             self.cursor = self.conn.cursor()
@@ -41,7 +41,6 @@ class DB:
         if self.conn is not None:
             if self.drop_tables:
                 for table in self.tables():
-                    print(table["table_name"])
                     self.cursor.execute(
                         self.__drop_table_query_template % table["table_name"])
                 self.cursor.execute(self.__remove_tables_query)
@@ -61,6 +60,11 @@ class DB:
                 "password": password
             }
         cursor.close()
+
+    def data(self, table_name):
+        query = self.__select_all_table_template % table_name
+        for row in self.cursor.execute(query):
+            yield row
 
     def insert(self, table, values):
         if values == []:

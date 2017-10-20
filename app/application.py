@@ -14,14 +14,24 @@ class Application:
     def __init__(self, config):
         self.download_data = get_option_value(config, "download_data", False)
         self.output_dir = get_option_value(config, "output_directory", "out")
-        self.filename_fmt = get_option_value(config, "filename_fmt", "r.xlsx")
+        self.fname_fmt = get_option_value(config, "filename_format", "r.xlsx")
         db_path = get_option_value(config, "database_path", "db/urls.db")
         db_types = get_option_value(config, "database_types", {})
-        db_options = { "types": db_types }
+        db_options = {"types": db_types}
+        writer_fmts = get_option_value(config, "xlsx_formats", {})
+        date_fmt = get_option_value(config, "data_date_format", "%m/%d/%Y")
+        autosum = get_option_value(config, "autosum_integer_columns", True)
+        widths = get_option_value(config, "xlsx_width", {})
+        writer_options = {
+            "formats": writer_fmts,
+            "date_format": date_fmt,
+            "widths": widths,
+            "autosum": autosum
+        }
 
         self.db = DB(db_path, db_options)
         self.parser = Parser()
-        self.writer = Writer(self._generate_output_filename())
+        self.writer = Writer(self._generate_output_filename(), writer_options)
 
     def run(self):
         if self.download_data:
@@ -29,11 +39,14 @@ class Application:
             for url in self.db.urls():
                 self._process_url(url)
         for table in self.db.tables():
-            pass
+            self.writer.write_sheet(
+                    table["name"],
+                    table["fields"],
+                    self.db.data(table["table_name"]))
 
     def _generate_output_filename(self):
         now = datetime.datetime.now()
-        filename = now.strftime(self.filename_fmt)
+        filename = now.strftime(self.fname_fmt)
         return os.path.join(self.output_dir, filename)
 
     def _process_url(self, url):
