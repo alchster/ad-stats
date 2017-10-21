@@ -3,10 +3,23 @@
 import sys
 
 from config import config
-from app import Application
+from app.application import Application
+
+
+def usage():
+    msg = """
+Usage:
+    ad-stats <path/to/file.xlsx>
+"""
+    print(msg)
 
 
 if __name__ == "__main__":
-    config["input_file"] = sys.argv[1]
+    # TODO?: add more cli params
+    try:
+        config["input_file"] = sys.argv[1]
+    except IndexError:
+        usage()
+        sys.exit(1)
     app = Application(config)
     app.run()

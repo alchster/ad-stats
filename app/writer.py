@@ -32,7 +32,7 @@ class Writer:
         self.widths = get_option_value(options, "widths", self.DEFAULT_WIDTHS)
         self.date_format = get_option_value(options, "date_format", "%d/%m/%Y")
         self.autosum = get_option_value(options, "autosum", True)
-        #TODO: add first sheet as summary
+        # TODO: add first sheet as summary
 
     def __del__(self):
         if self.book is not None:
@@ -147,7 +147,7 @@ class Writer:
         if not has_error:
             self.formats["error"] = self.book.add_format({
                 "bold": True,
-                "color": "red", 
+                "color": "red",
                 "bg_color": "black"
             })
 
