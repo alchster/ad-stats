@@ -1,8 +1,12 @@
 #!env/bin/python
 
+import sys
+
 from config import config
 from app import Application
 
+
 if __name__ == "__main__":
+    config["input_file"] = sys.argv[1]
     app = Application(config)
     app.run()

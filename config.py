@@ -40,6 +40,10 @@ config = {
         "date": 10,
         "*": 15
     },
+    "reader_options": {
+        "strings_match_re": r"[\w\/\.,:;%\\\$\^#!@&\*\+\-]",
+        "row_offset": 1,
+    },
     "data_date_format": "%Y-%m-%d",
     "download_data": True,
     "send_mail": True

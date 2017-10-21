@@ -2,9 +2,8 @@ import os
 import datetime
 import logging
 
-from .db import DB
+from .reader import Reader
 from .fetcher import Fetcher
-from .parser import Parser
 from .writer import Writer
 from .util import get_option_value
 
@@ -12,51 +11,39 @@ from .util import get_option_value
 class Application:
 
     def __init__(self, config):
-        self.download_data = get_option_value(config, "download_data", False)
-        self.output_dir = get_option_value(config, "output_directory", "out")
-        self.fname_fmt = get_option_value(config, "filename_format", "r.xlsx")
-        db_path = get_option_value(config, "database_path", "db/urls.db")
-        db_types = get_option_value(config, "database_types", {})
-        db_options = {"types": db_types}
-        writer_fmts = get_option_value(config, "xlsx_formats", {})
-        date_fmt = get_option_value(config, "data_date_format", "%m/%d/%Y")
-        autosum = get_option_value(config, "autosum_integer_columns", True)
-        widths = get_option_value(config, "xlsx_width", {})
-        writer_options = {
-            "formats": writer_fmts,
-            "date_format": date_fmt,
-            "widths": widths,
-            "autosum": autosum
-        }
-
-        self.db = DB(db_path, db_options)
-        self.parser = Parser()
-        self.writer = Writer(self._generate_output_filename(), writer_options)
+        logging.basicConfig(format='%(levelname)s:%(message)s',
+                            level=logging.INFO)
+        self._configure(config)
 
     def run(self):
-        if self.download_data:
-            logging.info("Downloading data")
-            for url in self.db.urls():
-                self._process_url(url)
-        for table in self.db.tables():
-            self.writer.write_sheet(
-                    table["name"],
-                    table["fields"],
-                    self.db.data(table["table_name"]))
+        writer = Writer(self.output_file, self.writer_options)
+        with Reader(self.input_file, self.reader_options) as reader:
+            for url_info in reader:
+                with Fetcher(url_info) as fetcher:
+                    writer.write_sheet(url_info["name"], fetcher)
 
-    def _generate_output_filename(self):
-        now = datetime.datetime.now()
-        filename = now.strftime(self.fname_fmt)
-        return os.path.join(self.output_dir, filename)
+    def _configure(self, config):
+        self.input_file = config["input_file"]
+        self.reader_options = get_option_value(config, "reader_options", {})
 
-    def _process_url(self, url):
-        first_line = True
-        table = None
-        for line in Fetcher.get(url["url"], url["user"], url["password"]):
-            parsed = self.parser.parse_line(line)
-            if first_line:
-                table = self.db.create_table(url["site"], parsed)
-                first_line = False
-                continue
-            self.db.insert(table, parsed)
-        self.db.commit()
+        output_dir = get_option_value(config, "output_directory", "out")
+        filename_fmt = get_option_value(config, "filename_format", "r.xlsx")
+        self.output_file = Application._output_file(output_dir, filename_fmt)
+        self.writer_options = Application._writer_options(config)
+
+    @staticmethod
+    def _output_file(output_dir, fmt):
+        return os.path.join(output_dir, datetime.datetime.now().strftime(fmt))
+
+    @staticmethod
+    def _writer_options(config):
+        return {
+            "formats": get_option_value(config, "xlsx_formats", {}),
+            "date_format": get_option_value(config,
+                                            "data_date_format",
+                                            "%m/%d/%Y"),
+            "widths": get_option_value(config, "xlsx_width", {}),
+            "autosum": get_option_value(config,
+                                        "autosum_integer_columns",
+                                        True)
+        }
