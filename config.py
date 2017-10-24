@@ -1,6 +1,6 @@
 config = {
     "output_directory": "out",
-    "filename_format": "report_%Y%m%d.xlsx",
+    "filename_format": "full_%Y%m%d.xlsx",
     "database_path": "db/urls.db",
     "database_types": {
         "Date": "varchar primary key",
@@ -14,7 +14,8 @@ config = {
             "top": True,
             "bottom": True,
             "left": True,
-            "right": True
+            "right": True,
+#            "autofilter": True
         },
         "date": {
             "num_format": "dd.mm.yyyy",
@@ -24,7 +25,12 @@ config = {
         },
         "integer": {
             "left": True,
-            "right": True
+            "right": True,
+            "num_format": "#,##0"
+        },
+        "percent" : {
+            "color": "gray",
+            "num_format": "0.00%"
         },
         "footer": {
             "bold": True,
@@ -32,7 +38,8 @@ config = {
             "top": True,
             "bottom": True,
             "left": True,
-            "right": True
+            "right": True,
+            "num_format": "#,##0"
         },
     },
     "xlsx_width": {

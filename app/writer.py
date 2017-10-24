@@ -100,14 +100,25 @@ class Writer:
     def _write_line(self, sheet, data):
         self.row += 1
         col = 0
+        starts = 0
+        shows = 0
         for value in data.split(","):
             column_info = self.columns[col]
             if column_info[0] == "date":
                 value = datetime.datetime.strptime(value, self.date_format)
             elif column_info[0] == "integer":
                 value = int(value)
+            if col == 1:
+                starts = value
+            elif col == 2:
+                shows = value
             sheet.write(self.row, col, value, column_info[1])
             col += 1
+        try:
+            percent = shows/starts
+        except ZeroDivisionError:
+            percent = 0
+        sheet.write(self.row, col, percent, self.formats["percent"])
 
     def _write_error(self, sheet, errmsg):
         logging.debug("Writing error message: %s" % errmsg)
@@ -118,18 +129,22 @@ class Writer:
         if self.autosum:
             for col, (fmt, _) in self.columns.items():
                 if fmt == "integer":
-                    val = "=SUM(%(letter)s%(first)d:%(letter)s%(last)d)" %\
-                            {
-                                "letter": chr(ord("A") + col),
-                                "first": 2,
-                                "last": row_number
-                            }
+                    if row_number > 2:
+                        val = "=SUM(%(letter)s%(first)d:%(letter)s%(last)d)" %\
+                                {
+                                    "letter": chr(ord("A") + col),
+                                    "first": 2,
+                                    "last": row_number
+                                }
+                    else:
+                        val = 0
                 elif fmt == "date":
                     val = "Total"
                 else:
                     val = ""
                 f = get_option_value(self.formats, "footer", None)
                 sheet.write(row_number, col, val, f)
+                sheet.autofilter(0, 0, row_number - 1, 4)
 
     def _get_width(self, data_type):
         try:
