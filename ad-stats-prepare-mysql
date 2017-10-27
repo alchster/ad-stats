@@ -1,0 +1,117 @@
+#!env/bin/python
+
+import logging
+import os
+import sys
+import re
+import MySQLdb as sql
+
+
+def configure_log():
+    logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+
+
+def create_directory(dirname):
+    if not os.path.isdir(dirname):
+        logging.info("Creating directory %s" % dirname)
+        execute_command(os.mkdir, dirname)
+    return dirname
+
+
+def initialize_directory(dirname):
+    filename = os.path.join(dirname, "__init__.py")
+    if not os.path.isfile(filename):
+        logging.info("Initializing directory %s" % dirname)
+        open(filename, "w").close()
+
+
+def create_db_config(dirname):
+    filename = os.path.join(dirname, "db.py")
+    if not os.path.isfile(filename):
+        dsn = get_params()
+        logging.info("Creating file %s" % filename)
+        with open(filename, "w") as f:
+            f.write("parameters = %s" % str(dsn))
+    if not test_db_connection():
+        logging.info("Removing file %s" % filename)
+        os.unlink(filename)
+        finish(False)
+
+
+def test_db_connection():
+    logging.info("Testing database connection")
+    import conf.db
+    try:
+        sql.connect(**conf.db.parameters).close()
+        logging.info("Connection succeeded")
+        return True
+    except Exception as e:
+        logging.error("Cannot connect to database: %s" % e)
+        return False
+
+
+def get_params():
+    logging.info("Configuring database connection")
+    return {
+        "host": get_param("Host", "localhost", r"^[a-zA-Z_]\w*$"),
+        "port": get_param("Port", 3306, r"^\d{1,5}$"),
+        "db": get_param("Database", "adstats", r"^[a-zA-Z_]\w*$"),
+        "user": get_param("Username", "adstats", r"^[a-zA-Z_]\w*$"),
+        "passwd": get_param(
+            "Password",
+            "adstats",
+            r"^[\w\/\\\=\+\-\*!@#\$%&^\'\"`~\?\(\)\[\]\{\}\.,<>]*$"),
+        "use_unicode": True
+    }
+
+
+def get_param(name, default_value, regexp):
+    count = 0
+    max_tries = 3
+    while count < max_tries:
+        value = input("%s (%s): " % (name, str(default_value)))
+        if value == "":
+            value = default_value
+            break
+        else:
+            if re.match(regexp, value) is None:
+                count += 1
+                if count < max_tries:
+                    logging.info("Invalid value. Try again.")
+                else:
+                    logging.error("Surrender. Using default value.")
+                    value = default_value
+                continue
+            if isinstance(default_value, int):
+                value = int(value)
+            break
+    return value
+
+
+def execute_command(command, *args, **kwargs):
+    try:
+        command(*args, **kwargs)
+    except Exception as e:
+        logging.error(e)
+        finish(False)
+
+
+def finish(success):
+    if success:
+        logging.info("Configuration ready")
+        sys.exit(0)
+    logging.info("Configuration failed")
+    sys.exit(1)
+
+
+def main():
+    configure_log()
+    dirname = os.path.join(os.path.abspath(os.path.curdir), "conf")
+    create_directory(dirname)
+    initialize_directory(dirname)
+    create_db_config(dirname)
+    finish(True)
+
+
+if __name__ == "__main__":
+    main()

@@ -6,3 +6,4 @@ env/
 *.py[cod]
 test/
 test*.py
+conf/

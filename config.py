@@ -1,11 +1,7 @@
 config = {
+    "configuration_directory": "conf",
     "output_directory": "out",
     "filename_format": "report_%Y%m%d.xlsx",
-    "database_path": "db/urls.db",
-    "database_types": {
-        "Date": "varchar primary key",
-        "*": "integer"
-    },
     "xlsx_formats": {
         "header": {
             "bold": True,
@@ -15,7 +11,6 @@ config = {
             "bottom": True,
             "left": True,
             "right": True,
-#            "autofilter": True
         },
         "date": {
             "num_format": "dd.mm.yyyy",
