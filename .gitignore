@@ -4,3 +4,5 @@ env/
 *.db
 *.xlsx
 *.py[cod]
+test/
+test*.py

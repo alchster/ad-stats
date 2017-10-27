@@ -8,7 +8,7 @@ from .util import get_option_value
 
 class Reader:
 
-    def __init__(self, filename, config):
+    def __init__(self, filename, config={}):
         self._configure(config)
         try:
             self.book = xlrd.open_workbook(filename)

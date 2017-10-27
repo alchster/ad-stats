@@ -1,6 +1,6 @@
 config = {
     "output_directory": "out",
-    "filename_format": "full_%Y%m%d.xlsx",
+    "filename_format": "report_%Y%m%d.xlsx",
     "database_path": "db/urls.db",
     "database_types": {
         "Date": "varchar primary key",
