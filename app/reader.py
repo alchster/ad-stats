@@ -1,21 +1,19 @@
 import logging
 import re
-import xlrd
 import sys
+import xlrd
 
 from .util import get_option_value
 
 
 class Reader:
-
     def __init__(self, filename, config={}):
         self._configure(config)
         try:
             self.book = xlrd.open_workbook(filename)
             self.filename = filename
         except Exception as e:
-            logging.error("Unable to open input file %s: %s"
-                          % (filename, e))
+            logging.error("Unable to open input file %s: %s", filename, e)
             sys.exit(1)
         self.sheet = self.book.sheet_by_index(self.sheet_number)
 
@@ -26,21 +24,21 @@ class Reader:
                 values = self.sheet.row_values(index)
                 if len(values) >= len(self.columns):
                     row = {}
-                    for col in self.columns.keys():
-                        v = values[self.columns[col]]
-                        if isinstance(v, float):
-                            v = int(v)
-                        s = self.string(str(v))
+                    for col in self.columns:
+                        val = values[self.columns[col]]
+                        if isinstance(val, float):
+                            val = int(val)
+                        str_val = self.string(str(val))
                         if col == "name":
-                            s = self.sheet_name(s)
-                        row[col] = s
+                            str_val = self.sheet_name(str_val)
+                        row[col] = str_val
                     count += 1
                     yield row
-        logging.info("Processed %d lines from %s" % (count, self.filename))
+        logging.info("Processed %d lines from %s", count, self.filename)
 
-    def __exit__(self, type, message, traceback):
-        if type is not None:
-            logging.error("Reader: %s" % message)
+    def __exit__(self, typ, message, traceback):
+        if typ is not None:
+            logging.error("Reader: %s", message)
 
     def _configure(self, config):
         self.sheet_number = get_option_value(config, "sheet_number", 0)
