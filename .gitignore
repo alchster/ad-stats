@@ -1,3 +1,5 @@
+.vimrc
+*.bak
 *.swp
 env/
 */__pycache__/
@@ -7,3 +9,4 @@ env/
 test/
 test*.py
 conf/
+tmp/
