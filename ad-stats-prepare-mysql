@@ -4,7 +4,8 @@ import logging
 import os
 import sys
 import re
-import MySQLdb as sql
+
+from sqlalchemy.engine import create_engine
 
 
 def configure_log():
@@ -42,7 +43,9 @@ def test_db_connection():
     logging.info("Testing database connection")
     import conf.db
     try:
-        sql.connect(**conf.db.parameters).close()
+        engine = create_engine(conf.db.parameters["URI"])
+        conn = engine.connect()
+        conn.close()
         logging.info("Connection succeeded")
         return True
     except Exception as e:
@@ -53,15 +56,17 @@ def test_db_connection():
 def get_params():
     logging.info("Configuring database connection")
     return {
-        "host": get_param("Host", "localhost", r"^[a-zA-Z_]\w*$"),
-        "port": get_param("Port", 3306, r"^\d{1,5}$"),
-        "db": get_param("Database", "adstats", r"^[a-zA-Z_]\w*$"),
-        "user": get_param("Username", "adstats", r"^[a-zA-Z_]\w*$"),
-        "passwd": get_param(
-            "Password",
-            "adstats",
-            r"^[\w\/\\\=\+\-\*!@#\$%&^\'\"`~\?\(\)\[\]\{\}\.,<>]*$"),
-        "use_unicode": True
+        "URI": "mysql://%(user)s:%(passwd)s@%(host)s:%(port)d/%(db)s" % {
+            "host": get_param("Host", "localhost", r"^[a-zA-Z_]\w*$"),
+            "port": get_param("Port", 3306, r"^\d{1,5}$"),
+            "db": get_param("Database", "adstats", r"^[a-zA-Z_]\w*$"),
+            "user": get_param("Username", "adstats", r"^[a-zA-Z_]\w*$"),
+            "passwd": get_param(
+                "Password",
+                "adstats",
+                r"^[\w\/\\\=\+\-\*!@#\$%&^\'\"`~\?\(\)\[\]\{\}\.,<>]*$"),
+            "use_unicode": True
+        }
     }
 
 

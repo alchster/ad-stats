@@ -1,0 +1,29 @@
+{% extends "_base.html" %} {% block title %}Check file - Ad statistics{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <p class="d-block">Убедитесь в корректности информации</p>
+</div>
+<div class="row justify-content-center">
+  <p class="d-block"><a class="btn btn-outline-primary" href="update">Продолжить</a></p>
+</div>
+<div class="row">
+  <table class="table">
+    <tr>
+      <th>Название</th>
+      <th>URL</th>
+      <th>Логин</th>
+      <th>Пароль</th>
+    </tr>
+    {% for url in urls %}
+    <tr>
+      <td>{{ url["name"] }}</td>
+      <td>{{ url["url"] }}</td>
+      <td>{{ url["user"] }}</td>
+      <td>{{ url["pass"] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="row justify-content-center">
+  <p class="d-block"><a class="btn btn-outline-primary" href="update">Продолжить</a></p>
+</div>
+{% endblock %}
