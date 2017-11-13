@@ -27,7 +27,7 @@ class Reader:
                             val = int(val)
                         str_val = self.string(str(val))
                         if col == "name":
-                            str_val = self.sheet_name(str_val)
+                            str_val = self.string(str_val)
                         row[col] = str_val
                     count += 1
                     yield row
@@ -43,8 +43,8 @@ class Reader:
         self.columns = {
             "name": Reader.get_option_value(config, "name_column", 0),
             "url": Reader.get_option_value(config, "url_column", 1),
-            "user": Reader.get_option_value(config, "username_column", 2),
-            "pass": Reader.get_option_value(config, "password_column", 3)
+            "username": Reader.get_option_value(config, "username_column", 2),
+            "password": Reader.get_option_value(config, "password_column", 3)
         }
         str_re = Reader.get_option_value(config, "strings_match_re", r".*")
         self.string = Reader.string_filter(str_re)

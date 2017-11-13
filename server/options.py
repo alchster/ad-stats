@@ -14,7 +14,7 @@ class Options(object):
         },
         "database": {
             "engine": "sqlite",
-            "name": ":memory:",
+            "name": "",
             "username": "",
             "password": "",
             "host": "",

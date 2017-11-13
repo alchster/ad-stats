@@ -1,7 +1,12 @@
-from flask import Blueprint, render_template, redirect, request
+import logging
+
+from flask import Blueprint, render_template, redirect, request, current_app
 from jinja2 import TemplateNotFound
+from sqlalchemy.exc import IntegrityError
 
 from .util.reader import Reader
+from .util.tablename import tablename
+from .models.urls import URLs
 
 bp = Blueprint("ad-stats", __name__,
                static_folder="../web/static",
@@ -30,15 +35,44 @@ def config_post():
 
 @bp.route("/prepare")
 def prepare():
-    # TODO: make separate lists with new, updated and disabled (removed?) urls
     with bp.reader as reader:
-        return render_template("prepare.html", urls=reader)
+        bp.separator = URLs.separate(current_app.db.session, reader)
+    bp.reader = None
+    return render_template("prepare.html", urls=bp.separator)
 
 
 @bp.route("/update")
 def update():
-    if bp.reader is None:
+    if bp.separator is None:
         return render_template("error.html")
-    with bp.reader as reader:
-        print(reader)
-        return render_template("success.html")
+    session = current_app.db.session
+
+    for url in bp.separator.removed:
+        u = session.query(URLs).filter_by(url=url["url"]).first()
+        # TODO: drop table u.table
+        session.delete(u)
+
+    for url in bp.separator.modified:
+        u = session.query(URLs).filter_by(url=url["url"]).first()
+        u.modify(url)
+
+    for url in bp.separator.added:
+        tn = tablename(url["name"])
+        u = URLs(name=url["name"],
+                 table=tn,
+                 url=url["url"],
+                 username=url["username"],
+                 password=url["password"])
+        retries = 0
+        while retries < 5:
+            try:
+                session.add(u)
+                break
+            except IntegrityError:
+                logging.debug("Table '%s' is already exists", tn)
+                retries += 1
+                tn = "%s_%d" % (tablename(url["name"]), retries)
+                u.table = tn
+
+    session.commit()
+    return render_template("success.html")

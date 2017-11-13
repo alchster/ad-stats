@@ -3,7 +3,20 @@
   <p class="d-block">Убедитесь в корректности информации</p>
 </div>
 <div class="row justify-content-center">
+  <p class="d-block"><a class="btn btn-outline-primary mr-5" href="config">Назад</a></p>
   <p class="d-block"><a class="btn btn-outline-primary" href="update">Продолжить</a></p>
+</div>
+{% for table in [urls.added, urls.modified, urls.removed] %}
+<div class="row">
+  <h2>
+    {% if table == urls.added %}
+      Добавляемые
+    {% elif table == urls.modified %}
+      Изменяемые
+    {% else %}
+      Удаляемые
+    {% endif %}
+  </h2>
 </div>
 <div class="row">
   <table class="table">
@@ -13,17 +26,19 @@
       <th>Логин</th>
       <th>Пароль</th>
     </tr>
-    {% for url in urls %}
+    {% for url in table %}
     <tr>
       <td>{{ url["name"] }}</td>
       <td>{{ url["url"] }}</td>
-      <td>{{ url["user"] }}</td>
-      <td>{{ url["pass"] }}</td>
+      <td>{{ url["username"] }}</td>
+      <td>{{ url["password"] }}</td>
     </tr>
     {% endfor %}
   </table>
 </div>
+{% endfor %}
 <div class="row justify-content-center">
+  <p class="d-block"><a class="btn btn-outline-primary mr-5" href="config">Назад</a></p>
   <p class="d-block"><a class="btn btn-outline-primary" href="update">Продолжить</a></p>
 </div>
 {% endblock %}

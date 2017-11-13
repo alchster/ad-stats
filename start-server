@@ -58,7 +58,7 @@ def read_config(filename):
 
 def start_server(config, debug=False):
     opts = config.server_options()
-    app = create_server(config)
+    app = create_server(config, debug)
     app.run(opts["listen_address"],
             port=opts["listen_port"],
             debug=debug)
