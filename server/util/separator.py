@@ -1,8 +1,9 @@
 class Separator:
-    added = []
-    modified = []
-    removed = []
-    unchanged = []
+    def __init__(self):
+        self.added = []
+        self.modified = []
+        self.removed = []
+        self.unchanged = []
 
     def __repr__(self):
         return "Added: %d\nModified: %d\nUnchanged: %d\nRemoved: %d" % \
