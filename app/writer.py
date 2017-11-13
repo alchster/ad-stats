@@ -32,6 +32,9 @@ class Writer:
         self.widths = get_option_value(options, "widths", self.DEFAULT_WIDTHS)
         self.date_format = get_option_value(options, "date_format", "%d/%m/%Y")
         self.autosum = get_option_value(options, "autosum", True)
+        self.last_days = get_option_value(options, "last_days", 0)
+        msg = "All" if self.last_days <= 0 else "Last %d" % self.last_days
+        logging.info("%s days will be written", msg)
         # TODO: add first sheet as summary
 
     def __del__(self):
@@ -45,6 +48,10 @@ class Writer:
         if error:
             self._write_error(sheet, header)
             return
+
+        self.after = datetime.date.min if self.last_days <= 0 \
+            else datetime.date.today() - \
+            datetime.timedelta(days=self.last_days)
 
         for row in data_iterator:
             logging.debug(row)
@@ -98,7 +105,6 @@ class Writer:
         return sheet
 
     def _write_line(self, sheet, data):
-        self.row += 1
         col = 0
         starts = 0
         shows = 0
@@ -106,6 +112,10 @@ class Writer:
             column_info = self.columns[col]
             if column_info[0] == "date":
                 value = datetime.datetime.strptime(value, self.date_format)
+                value = value.date()
+                if value < self.after:
+                    return
+                self.row += 1
             elif column_info[0] == "integer":
                 value = int(value)
             if col == 1:

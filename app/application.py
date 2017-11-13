@@ -38,6 +38,7 @@ class Application:
     @staticmethod
     def _writer_options(config):
         return {
+            "last_days": get_option_value(config, "last_days", 0),
             "formats": get_option_value(config, "xlsx_formats", {}),
             "date_format": get_option_value(config,
                                             "data_date_format",

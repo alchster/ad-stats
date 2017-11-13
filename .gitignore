@@ -7,3 +7,6 @@ env/
 test/
 test*.py
 conf/
+tmp/
+*.bak
+.vimrc

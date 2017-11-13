@@ -23,7 +23,7 @@ config = {
             "right": True,
             "num_format": "#,##0"
         },
-        "percent" : {
+        "percent": {
             "color": "gray",
             "num_format": "0.00%"
         },
@@ -48,5 +48,6 @@ config = {
     },
     "data_date_format": "%Y-%m-%d",
     "download_data": True,
-    "send_mail": True
+    "send_mail": True,
+    "last_days": 7
 }
