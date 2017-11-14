@@ -14,7 +14,8 @@ class URLs(Base):
     username = Column(String(50), nullable=False)
     password = Column(String(50), nullable=False)
     created = Column(DateTime(timezone=True), default=datetime.datetime.now)
-    modified = Column(DateTime(timezone=True), nullable=True)
+    modified = Column(DateTime(timezone=True), nullable=True,
+                      onupdate=datetime.datetime.now)
     data_updated = Column(DateTime(timezone=True), nullable=True)
     active = Column(Boolean(), default=True)
 
@@ -22,7 +23,6 @@ class URLs(Base):
         self.name = url_info["name"]
         self.username = url_info["username"]
         self.password = url_info["password"]
-        self.modified = datetime.datetime.now()
 
     def __repr__(self):
         return "%s <URL: %s user: %s password: %s>" \
@@ -49,5 +49,4 @@ class URLs(Base):
             if url.url not in new:
                 separator.removed.append(url.__dict__)
 
-        print(separator)
         return separator

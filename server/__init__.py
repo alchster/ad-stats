@@ -7,7 +7,6 @@ from .models.base import Base
 
 def create_server(options, debug=False):
     app = Flask("server")
-    print(debug)
     app.config['SQLALCHEMY_DATABASE_URI'] = options.db_uri()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = debug

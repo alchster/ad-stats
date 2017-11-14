@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from .util.reader import Reader
 from .util.tablename import tablename
 from .models.urls import URLs
+from .models.data import Data
 
 bp = Blueprint("ad-stats", __name__,
                static_folder="../web/static",
@@ -49,7 +50,7 @@ def update():
 
     for url in bp.separator.removed:
         u = session.query(URLs).filter_by(url=url["url"]).first()
-        # TODO: drop table u.table
+        Data.drop(session, u.table)
         session.delete(u)
 
     for url in bp.separator.modified:
@@ -64,15 +65,27 @@ def update():
                  username=url["username"],
                  password=url["password"])
         retries = 0
-        while retries < 5:
+        # TODO?: move this to config
+        max_tries = 5
+        while retries < max_tries:
             try:
                 session.add(u)
+                Data.create(session, u.table)
                 break
             except IntegrityError:
                 logging.debug("Table '%s' is already exists", tn)
                 retries += 1
                 tn = "%s_%d" % (tablename(url["name"]), retries)
                 u.table = tn
+        if retries >= max_tries:
+            return render_template("error.html")
 
     session.commit()
+    return render_template("success.html")
+
+
+@bp.route("/test")
+def test():
+    from datetime import date
+    session = current_app.db.session
     return render_template("success.html")

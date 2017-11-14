@@ -46,7 +46,9 @@ class Reader:
             "username": Reader.get_option_value(config, "username_column", 2),
             "password": Reader.get_option_value(config, "password_column", 3)
         }
-        str_re = Reader.get_option_value(config, "strings_match_re", r".*")
+        str_re = Reader.get_option_value(config,
+                                         "strings_match_re",
+                                         r"[\w\/\.,:;%\\\$\^#!@&\*\+\-]")
         self.string = Reader.string_filter(str_re)
         self.sheet_name = Reader.string_filter(r"[^\[\]:*?\/\\]")
 
