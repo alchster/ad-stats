@@ -18,13 +18,19 @@ bp = Blueprint("ad-stats", __name__,
                template_folder="../web/templates")
 
 
-@bp.route("/", defaults={'page': 'index'})
 @bp.route("/<page>")
-def index(page):
+def main(page):
     try:
         return render_template("%s.html" % page)
     except TemplateNotFound:
         return render_template("404.html")
+
+
+@bp.route("/")
+@bp.route("/index")
+def index():
+    return render_template("index.html",
+                           urls=current_app.db.session.query(URLs).all())
 
 
 @bp.route("/stat/<name>")
@@ -116,10 +122,10 @@ def getdata():
 
     session = current_app.db.session
     for url in session.query(URLs).all():
-        for row in Fetcher(url.url,
-                           username=url.username,
-                           password=url.password,
-                           row_handler=get_parser(session, url.table)):
+        for _ in Fetcher(url.url,
+                         username=url.username,
+                         password=url.password,
+                         row_handler=get_parser(session, url.table)):
             pass
     session.commit()
 

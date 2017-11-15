@@ -6,6 +6,8 @@ from .base import Base
 
 
 class Data(object):
+    __tablename__ = None
+    __table_args__ = {'extend_existing': True}
     date = Column(Date, primary_key=True)
     starts = Column(Integer, nullable=False, default=0)
     shows = Column(Integer, nullable=False, default=0)

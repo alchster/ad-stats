@@ -1,0 +1,22 @@
+<table class="table table-striped table-sm">
+  <thead class="text-white bg-dark">
+    <tr>
+      <th class="w-20">Дата</th>
+      <th class="w-60">Показы</th>
+      <th class="w-10">Старты</th>
+      <th class="w-10">Клики</th>
+      <th class="w-10">%</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr>
+      <td>{{ row.date }}</td>
+      <td>{{ row.shows }}</td>
+      <td>{{ row.starts }}</td>
+      <td>{{ row.clicks }}</td>
+      <td>0.0</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
