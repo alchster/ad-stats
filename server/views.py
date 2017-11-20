@@ -159,7 +159,8 @@ def getdata():
                 for row in Fetcher(url.url,
                                    username=url.username,
                                    password=url.password,
-                                   row_handler=lambda x: x):
+                                   row_handler=get_parser(session,
+                                                          url.table)):
                     if row is not None:
                         logging.debug(row)
             except Exception as error:
