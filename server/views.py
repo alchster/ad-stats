@@ -1,13 +1,15 @@
 import logging
-from datetime import datetime, date, MINYEAR
+from datetime import datetime, MINYEAR
 
-from flask import Blueprint, render_template, redirect, request, current_app
+from flask import Blueprint, render_template, redirect, request, current_app, \
+    Response, stream_with_context
 from jinja2 import TemplateNotFound
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import extract
 
 from .util.reader import Reader
 from .util.tablename import tablename
+from .util import funcs
 from .models.urls import URLs
 from .models.data import Data
 
@@ -106,33 +108,67 @@ def update():
     return render_template("success.html")
 
 
-@bp.route("/getdata")
+@bp.route("/fetchdata")
 def getdata():
     def get_parser(session, table_name):
         # TODO: create table if not exists
         DataTable = Data.model(table_name)
+        old_data = session.query(DataTable).all()
+
+        def find(elem):
+            dt = elem["date"]
+            filtered = list(filter(lambda x: x.date == dt, old_data))
+            return filtered[0] if len(filtered) > 0 else None
+
+        def same(elem, row):
+            if elem.shows == row["shows"] \
+                    and elem.starts == row["starts"] \
+                    and elem.clicks == row["clicks"]:
+                return True
+            return False
 
         def parser(row):
             row[0] = datetime.strptime(row[0], "%Y-%m-%d").date()
-            data = session.query(DataTable).filter_by(date=row[0]).first()
+            for i in range(1, 4):
+                try:
+                    row[i] = int(row[i])
+                except:
+                    row[i] = 0
+
             row = dict(zip(["date", "shows", "starts", "clicks"], row))
+            data = find(row)
             if data is None:
                 session.add(DataTable(**row))
             else:
+                if same(data, row):
+                    return
                 data.shows = row["shows"]
                 data.starts = row["starts"]
                 data.clicks = row["clicks"]
-            session.commit()
+            return row
 
         return parser
 
-    session = current_app.db.session
-    for url in session.query(URLs).all():
-        for _ in Fetcher(url.url,
-                         username=url.username,
-                         password=url.password,
-                         row_handler=get_parser(session, url.table)):
-            pass
-    session.commit()
+    def process():
+        session = current_app.db.session
+        urls = session.query(URLs).all()
+        current = 0
+        total = len(urls)
+        for url in urls:
+            try:
+                for row in Fetcher(url.url,
+                                   username=url.username,
+                                   password=url.password,
+                                   row_handler=lambda x: x):
+                    if row is not None:
+                        logging.debug(row)
+            except Exception as error:
+                yield "data: Error while updating '%s': %s\n\n" % (url.name,
+                                                                   error)
+            current += 1
+            yield "data:{:d}/{:d}|{:.0f}\n\n".format(current, total,
+                                                     (current / total) * 100)
+        session.commit()
 
-    return render_template("success.html")
+    return Response(stream_with_context(process()),
+                    mimetype="text/event-stream")

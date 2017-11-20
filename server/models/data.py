@@ -26,3 +26,8 @@ class Data(object):
     def drop(session, name):
         logging.debug("Dropping table %s", name)
         session.drop(Data.model(name))
+
+    def __repr__(self):
+        return "%s (%s, starts: %d, shows: %d, clicks: %d)" % \
+            (self.__tablename__, self.date.strftime("%Y-%m-%d"),
+             self.starts, self.shows, self.clicks)

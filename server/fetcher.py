@@ -19,6 +19,8 @@ class Fetcher:
 
     def __iter__(self):
         with requests.get(self.url, auth=self.auth, stream=False) as resp:
+            if resp.status_code != 200:
+                resp.raise_for_status()
             self.reader = csv.reader(iterdecode(resp.iter_lines(), "utf-8"),
                                      delimiter=",")
             # skip first row

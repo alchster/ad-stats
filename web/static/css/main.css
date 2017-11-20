@@ -54,5 +54,10 @@ body.loading{
 body.loading .modal{
   display: block;
 }
+.error-log-window p{
+  font-size: 70%;
+  color: red;
+  margin: 0px;
+}
 @media screen and (max-width: 767px){
 }

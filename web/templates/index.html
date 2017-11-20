@@ -3,16 +3,20 @@
 {% block page %}index{% endblock %}
 {% block content %}
 <div class="row">
-  <ul class="col-sm-6 col-md-3 list-group" id="list-members">
+  <ul class="col-sm-6 col-md-3 list-group d-none d-lg-block" id="list-members">
     {% for url in urls %}
     <li class="list-group-item stat-member" data-name="{{ url.table }}">{{ url.name }}</li>
     {% endfor %}
   </ul>
   <div class="col">
-    <div class="my-4">
+    <div class="mt-4">
       <input type="range" name="last-days" min="0" max="0" value="0" />
     </div>
-    <div>
+    <div class="row justify-content-center my-4">
+      <b class="mr-2">Период:</b>
+      <span class="mx-2" id="date-from"></span> - <span class="mx-2" id="date-to"></span>
+    </div>
+     <div>
       <div id="stat-table"></div>
       <div class="modal-block"></div>
     </div>
