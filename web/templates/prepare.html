@@ -1,4 +1,7 @@
-{% extends "_base.html" %} {% block title %}Check file - Ad statistics{% endblock %} {% block content %}
+{% extends "_base.html" %}
+{% block title %}Проверка файла - Ad statistics{% endblock %}
+{% block page %}prepare{% endblock %}
+{% block content %}
 <div class="row justify-content-center">
   <p class="d-block">Убедитесь в корректности информации</p>
 </div>
@@ -6,7 +9,7 @@
   <p class="d-block"><a class="btn btn-outline-primary mr-5" href="config">Назад</a></p>
   <p class="d-block"><a class="btn btn-outline-primary" href="update">Продолжить</a></p>
 </div>
-{% for cls, table in { "btn-success": { "id": "table-added", "text": "text-success", "name": "Добавляемые", "values": urls.added, }, "btn-warning": { "id": "table-modified", "text": "text-warning", "name": "Изменяемые", "values": urls.modified, }, "btn-danger" : { "id": "table-deleted", "text": "text-danger", "name": "Удаляемые", "values": urls.removed } }.items() %}
+{% for cls, table in { "btn-success": { "id": "table-added", "text": "text-success", "name": "Добавляемые", "values": separator.added, }, "btn-warning": { "id": "table-modified", "text": "text-warning", "name": "Изменяемые", "values": separator.modified, }, "btn-danger" : { "id": "table-deleted", "text": "text-danger", "name": "Удаляемые", "values": separator.removed } }.items() %}
 <div class="row justify-content-center my-2">
   <a class="btn btn-lg btn-block {{ cls }}" data-toggle="collapse" href="#{{ table["id"] }}" aria-expanded="false" aria-controls="{{ table["id"] }}">
       {{ table["name"] }} ({{ table["values"]|length }})

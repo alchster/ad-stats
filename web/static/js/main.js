@@ -6,6 +6,7 @@ var $rows = null;
 var rowsLen = null;
 var $tableFooter = null;
 var page = $("body").data("name");
+var $currentStatMember =  null;
 
 function sum(arr) {
   return arr.reduce(function(a, b) { return a + b; }, 0);
@@ -87,15 +88,20 @@ function getAjaxOpts(url, doAfter) {
 	};
 }
 
-$(".stat-member").click(function(ev) {
+$("#list-members .stat-member").click(function(ev) {
   var url, after;
+  if ($currentStatMember)
+    $currentStatMember.removeClass("active");
+  $currentStatMember = $(this);
+  $currentStatMember.addClass("active");
+
   switch (page) {
     case "index":
-      url = "stat/" + $(ev.target).data("name");
+      url = "stat/" + $currentStatMember.data("name");
       doAfter = setSlider;
       break;
     default:
-      url = "stat/" + $(ev.target).data("name");
+      url = "stat/" + $currentStatMember.data("name");
       doAfter = updateTable;
   }
   $.ajax(getAjaxOpts(url, doAfter));
@@ -117,6 +123,11 @@ $slider.on("input change", function(ev) {
   lastDays = -ev.target.value;
   showLastDays();
 });
+
+/*
+$("#list-members .list-group-item").click(function(){
+});
+*/
 
 $("#fetch").click(function() {
   var progressBar = $("#progress-bar");
@@ -152,9 +163,18 @@ $("#fetch").click(function() {
   }
 });
 
+$('[data-toggle=offcanvas]').click(function() {
+  console.log("sidebar toggle");
+  $("#side-panel").css("display:", "block!important");
+  $("#side-panel").css("width:", "100%!important");
+
+  $("#main").css("display:", "none!important");
+  $("#main").css("width:", "0%!important");
+});
+
 $(document).ready(function() {
   $(".navbar-nav .nav-item").removeClass("active");
   $("a[href$=" + page + "]").addClass("active");
-	$("#list-members .list-group-item").first().click();
+	$("#list-members .stat-member").first().click();
   $(".navbar-nav .disabled a").click(function() {return false;});
 });

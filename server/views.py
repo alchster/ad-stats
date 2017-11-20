@@ -63,7 +63,7 @@ def prepare():
     with bp.reader as reader:
         bp.separator = URLs.separate(current_app.db.session, reader)
     bp.reader = None
-    return render_template("prepare.html", urls=bp.separator)
+    return render_template("prepare.html", separator=bp.separator)
 
 
 @bp.route("/update")

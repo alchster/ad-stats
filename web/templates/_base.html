@@ -6,12 +6,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body data-name="{% block page %}{% endblock %}">
+
   <nav id="nav-main" class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
+    <div class="container-fluid">
       <div class="navbar-header mr-auto">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label=""><span class="navbar-toggler-icon"></span></button>
         <span class="navbar-brand mb-0 h1">Ad stats</span>
@@ -28,12 +30,12 @@
         <ul class="nav navbar-nav row">
           <li class="nav-item mr-2">
             <a class="btn btn-outline-secondary my-1" href="fetch">
-              <img src="img/download-white.png" alt="Обновить">
+              <i class="fa fa-download fa-lg"></i>
             </a>
           </li>
           <li class="nav-item">
             <a class="btn btn-outline-secondary my-1" href="config">
-              <img src="img/cogwheel-white.png" alt="Настройки">
+              <i class="fa fa-cogs fa-lg"></i>
             </a>
           </li>
         </ul>
@@ -41,11 +43,33 @@
     </div>
   </nav>
 
-  <div class="container justify-content-center mt-3">
+  <div class="wrapper container-fluid my-1">
+  <!--  <div class="container justify-content-center my-1"> -->
+    <div class="row row-offcanvas row-offcanvas-left">
+  <!-- sidebar -->
+      <div class="col-md-3 sidebar-offcanvas d-none d-md-block" id="side-panel">
+        {% if urls is not none %}
+        <ul class="nav nav-stacked flex-column col-11" id="list-members">
+          {% for url in urls %}
+          <li class="nav-item btn btn-sm btn-light stat-member mb-1" data-name="{{ url.table }}">{{ url.name }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="d-none">
+          <a href="#" data-toggle="offcanvas"><i class="fa fa-navicon fa-lg"></i></a>
+        </div>
+      </div>
+  <!-- sidebar -->
+      <div class="col-md-9 col-12" id="main">
+        <div id="content">
+          {% block content %}
+          {% endblock %}
+        </div>
+        <div class="modal-block"></div>
+      </div>
+    </div>
 
-    {% block content %} {% endblock %}
-
-  </div>
+  </div> <!-- .wrapper.container-fluid -->
 
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>

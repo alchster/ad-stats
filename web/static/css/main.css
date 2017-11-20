@@ -1,20 +1,7 @@
-html{
+html, body{
 	height:100%;
-	overflow-y:scroll;
 }
-body{
-  min-height:100%;
-  width:100%;
-/*  display:table;*/
-}
-li.list-group-item{
-  background-color: #000;
-  background-color: rgba(0,0,0,.05);
-}
-li.list-group-item.active{
-  background-color: #343a40;
-  border-color: #343a40;
-}
+
 input[type=range]{
   -webkit-appearance:none;
   -moz-appearance:none;

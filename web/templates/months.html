@@ -2,22 +2,10 @@
 {% block title %}Месяцы - Ad stats{% endblock %}
 {% block page %}months{% endblock %}
 {% block content %}
-<div class="row">
-  <ul class="col-sm-6 col-md-3 list-group" id="list-members">
-    {% for url in urls %}
-    <li class="list-group-item stat-member" data-name="{{ url.table }}">{{ url.name }}</li>
-    {% endfor %}
-  </ul>
-  <div class="col">
-    <div class="row my-4">
-      <!--
-        <input type="range" name="last-days" min="0" max="0" value="0" />
-      -->
-    </div>
-    <div>
-      <div id="stat-table"></div>
-      <div class="modal-block"></div>
-    </div>
-  </div>
+<div class="row my-4">
+</div>
+<div>
+  <div id="stat-table"></div>
+  <div class="modal-block"></div>
 </div>
 {% endblock %}
