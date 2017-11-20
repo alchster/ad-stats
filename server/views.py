@@ -1,9 +1,10 @@
 import logging
-from datetime import datetime
+from datetime import datetime, date, MINYEAR
 
 from flask import Blueprint, render_template, redirect, request, current_app
 from jinja2 import TemplateNotFound
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import extract
 
 from .util.reader import Reader
 from .util.tablename import tablename
@@ -18,26 +19,31 @@ bp = Blueprint("ad-stats", __name__,
                template_folder="../web/templates")
 
 
+@bp.route("/", defaults={"page": "index"})
 @bp.route("/<page>")
 def main(page):
+    urls = current_app.db.session.query(URLs).all()
     try:
-        return render_template("%s.html" % page)
+        return render_template("%s.html" % page, urls=urls)
     except TemplateNotFound:
         return render_template("404.html")
 
 
-@bp.route("/")
-@bp.route("/index")
-def index():
-    return render_template("index.html",
-                           urls=current_app.db.session.query(URLs).all())
-
-
 @bp.route("/stat/<name>")
-def stat(name):
+@bp.route("/stat/<name>/<int:year>")
+@bp.route("/stat/<name>/<int:year>/<int:month>")
+def stat(name, year=None, month=None):
+    logging.debug("GET: stat: %s , year: %s, month: %s",
+                  name, str(year), str(month))
     session = current_app.db.session
-    return render_template("stat.html",
-                           data=session.query(Data.model(name)).all())
+    model = Data.model(name)
+
+    data = session.query(model)
+    if year is not None:
+        data = data.filter(extract("year", model.date) == year)
+    if month is not None:
+        data = data.filter(extract("month", model.date) == month)
+    return render_template("stat.html", data=data.all())
 
 
 @bp.route("/config", methods=["POST"])

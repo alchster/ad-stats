@@ -1,6 +1,6 @@
 {% extends "_base.html" %}
-{% block title %}Index - Ad stats{% endblock %}
-{% block page %}index{% endblock %}
+{% block title %}Весь период - Ad stats{% endblock %}
+{% block page %}all{% endblock %}
 {% block content %}
 <div class="row">
   <ul class="col-sm-6 col-md-3 list-group" id="list-members">
@@ -9,9 +9,6 @@
     {% endfor %}
   </ul>
   <div class="col">
-    <div class="my-4">
-      <input type="range" name="last-days" min="0" max="0" value="0" />
-    </div>
     <div>
       <div id="stat-table"></div>
       <div class="modal-block"></div>
