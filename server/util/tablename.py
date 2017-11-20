@@ -1,8 +1,6 @@
-import logging
-
 def tablename(string):
-    logging.debug("Transforming '%s' to table name", string)
-    tn = "".join(filter(str.isalnum, string.encode("ascii", "ignore")))
+    tn = "".join(filter(str.isalnum,
+                        string.encode("ascii", "ignore").decode()))
     if tn == "":
         tn = "__noname"
     if tn[0].isdigit():
