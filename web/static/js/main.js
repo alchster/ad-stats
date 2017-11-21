@@ -7,6 +7,11 @@ var rowsLen = null;
 var $tableFooter = null;
 var page = $("body").data("name");
 var $currentStatMember =  null;
+var $filterIcon = $("#stat-member-clear-filter i");
+var $statMember = $(".stat-member");
+var statMembers = {};
+
+// utils
 
 function sum(arr) {
   return arr.reduce(function(a, b) { return a + b; }, 0);
@@ -27,6 +32,26 @@ function separateThousands(num) {
 function formatFloat(fl) {
   return fl.toFixed(2).toString();
 }
+
+// stat-member
+
+function fillStatMembers() {
+  var memberObj;
+  $("#list-members .stat-member").toArray().forEach(function (el) {
+    memberObj = $(el);
+    statMembers[memberObj.html().toLowerCase()] = memberObj;
+  });
+}
+
+function filterStatMembers(str) {
+  $("#list-members .stat-member").hide();
+  for (var name in statMembers) {
+    if (name.indexOf(str.toLowerCase()) != -1)
+      statMembers[name].show();
+  }
+}
+
+// helpers
 
 function updateTable () {
   $rows = $("#stat-table tbody tr");
@@ -77,16 +102,36 @@ function fillSummary() {
 function getAjaxOpts(url, doAfter) {
   return {
     url: url,
-		beforeSend: function() {
+    beforeSend: function() {
       $modal.show();
-		},
-		success: function(data) {
+    },
+    success: function(data) {
       $modal.hide();
       $("#stat-table").html(data);
       doAfter();
-		}
-	};
+    }
+  };
 }
+
+// events
+
+$("#stat-member-filter").on("change keyup paste", function () {
+  var val = $(this).val();
+  $statMember.unmark();
+  if (val != "") {
+    $filterIcon.removeClass("fa-filter").addClass("fa-eraser");
+    $statMember.mark(val);
+  } else {
+    $filterIcon.removeClass("fa-eraser").addClass("fa-filter");
+  }
+  filterStatMembers(val);
+});
+
+$("#stat-member-clear-filter").click(function () {
+  $("#stat-member-filter").val("");
+  $("#stat-member-filter").change();
+  $("#list-members .stat-member").show();
+});
 
 $("#list-members .stat-member").click(function(ev) {
   var url, after;
@@ -111,12 +156,12 @@ $("#form-upload-submit").hide();
 
 $("#upload-xlsx").change(function() {
   $("#upload-file-name").html(this.files[0].name);
-	$("#form-upload").submit();
+  $("#form-upload").submit();
 });
 
 $(".list-group .list-group-item").click(function(ev) {
-	$(".list-group .list-group-item").removeClass("active");
-	$(ev.target).addClass("active");
+  $(".list-group .list-group-item").removeClass("active");
+  $(ev.target).addClass("active");
 });
 
 $slider.on("input change", function(ev) {
@@ -175,6 +220,7 @@ $('[data-toggle=offcanvas]').click(function() {
 $(document).ready(function() {
   $(".navbar-nav .nav-item").removeClass("active");
   $("a[href$=" + page + "]").addClass("active");
-	$("#list-members .stat-member").first().click();
+  $("#list-members .stat-member").first().click();
   $(".navbar-nav .disabled a").click(function() {return false;});
+  fillStatMembers();
 });

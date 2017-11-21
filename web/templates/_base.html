@@ -48,16 +48,22 @@
     <div class="row row-offcanvas row-offcanvas-left">
   <!-- sidebar -->
       <div class="col-md-3 sidebar-offcanvas d-none d-md-block" id="side-panel">
+        <header class="row">
+          <form class="form-inline mx-3 my-1 w-100">
+            <label class="sr-only" for="search-text">Название</label>
+            <div class="input-group mb-2 w-100">
+              <div class="input-group-addon col-2 justify-content-center" id="stat-member-clear-filter"><i class="fa fa-filter fa-lg"></i></div>
+              <input type="text" class="form-control mx-auto col-10" id="stat-member-filter" placeholder="Площадка">
+            </div>
+          </form>
+        </header>
         {% if urls is not none %}
-        <ul class="nav nav-stacked flex-column col-11" id="list-members">
+        <ul class="nav nav-stacked flex-column" id="list-members">
           {% for url in urls %}
           <li class="nav-item btn btn-sm btn-light stat-member mb-1" data-name="{{ url.table }}">{{ url.name }}</li>
           {% endfor %}
         </ul>
         {% endif %}
-        <div class="d-none">
-          <a href="#" data-toggle="offcanvas"><i class="fa fa-navicon fa-lg"></i></a>
-        </div>
       </div>
   <!-- sidebar -->
       <div class="col-md-9 col-12" id="main">
@@ -74,6 +80,7 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js" integrity="sha256-1iYR6/Bs+CrdUVeCpCmb4JcYVWvvCUEgpSU7HS5xhsY=" crossorigin="anonymous"></script>
   <script src="js/main.js"></script>
 </body>
 

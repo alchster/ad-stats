@@ -46,5 +46,11 @@ body.loading .modal{
   color: red;
   margin: 0px;
 }
+mark {
+  margin: 0;
+  padding: 0;
+  text-decoration: underline;
+  background: inherit;
+}
 @media screen and (max-width: 767px){
 }
