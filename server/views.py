@@ -31,6 +31,13 @@ def main(page):
         return render_template("404.html")
 
 
+@bp.route("/months")
+def months():
+    session = current_app.db.session
+    urls = session.query(URLs).all()
+    return render_template("months.html", urls=urls)
+
+
 @bp.route("/stat/<name>")
 @bp.route("/stat/<name>/<int:year>")
 @bp.route("/stat/<name>/<int:year>/<int:month>")

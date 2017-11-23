@@ -1,5 +1,9 @@
 html, body{
+  width:100%;
 	height:100%;
+}
+.wrapper{
+  padding: 0;
 }
 
 input[type=range]{
@@ -52,5 +56,138 @@ mark {
   text-decoration: underline;
   background: inherit;
 }
+
+@keyframes show-panel{
+  from {
+    -webkit-transform: translate(-100%, 0, 0);
+    -moz-transform: translate(-100%, 0, 0);
+    -ms-transform: translate(-100%, 0, 0);
+    -o-transform: translate(-100%, 0, 0);
+    transform: translate(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    -webkit-transform: translate(0, 0, 0);
+    -moz-transform: translate(0, 0, 0);
+    -ms-transform: translate(0, 0, 0);
+    -o-transform: translate(0, 0, 0);
+    transform: translate(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes show-main{
+  from {
+    -webkit-transform: translate(100%, 0, 0);
+    -moz-transform: translate(100%, 0, 0);
+    -ms-transform: translate(100%, 0, 0);
+    -o-transform: translate(100%, 0, 0);
+    transform: translate(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    -webkit-transform: translate(0, 0, 0);
+    -moz-transform: translate(0, 0, 0);
+    -ms-transform: translate(0, 0, 0);
+    -o-transform: translate(0, 0, 0);
+    transform: translate(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @media screen and (max-width: 767px){
+  .main-header{
+    position: relative;
+    overflow: hidden;
+  }
+/*
+  .wrapper{
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+*/
+  .row-offcanvas-left{
+    margin-top: 1em;
+  }
+  .row-offcanvas-left .sidebar-offcanvas{
+    background-color: rgb(255,255,255);
+    z-index: 2;
+    position: absolute;
+    padding-bottom: 0.5em;
+    left: -100%;
+  }
+  .row-offcanvas-left .main-container{
+    background-color: rgb(255,255,255);
+    position: absolute;
+    padding-bottom: 0.5em;
+    left: 0;
+  }
+
+  .row-offcanvas-left.hide-md-panel .sidebar-offcanvas{
+    animation: show-panel 0.5s ease reverse forwards;
+  }
+ 
+  .row-offcanvas-left.show-md-panel .sidebar-offcanvas{
+    animation: show-panel 0.5s ease normal forwards;
+    left: 0;
+  }
+
+  .row-offcanvas-left.hide-md-panel .main-container{
+    animation: show-main 0.5s ease normal forwards;
+/*    display: block!important; */
+  }
+  .row-offcanvas-left.show-md-panel .main-container{
+    animation: show-main 0.5s ease reverse forwards;
+    left: 100%
+/*    display: none!important; */
+  }
+
+
+/*
+  html, body{
+    overflow: scroll;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar {
+      background: transparent;
+      width: 0px;
+  }
+/* optional: show position indicator in red */
+/*
+::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
+
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all 0.25s ease-out;
+    -moz-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+  }
+*/
+/*
+  .row-offcanvas-left .sidebar-offcanvas{
+    display: none!important;
+  }
+
+  .row-offcanvas-left.active .sidebar-offcanvas{
+    display: block!important;
+  }
+
+ .row-offcanvas-left .main-container{
+    display: block!important;
+  }
+  .row-offcanvas-left.active .main-container{
+    display: none!important;
+  }
+
+/*
+  .sidebar-offcanvas {
+    position: relative;
+    top: 0;
+  }
+  */
 }

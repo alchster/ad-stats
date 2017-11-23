@@ -12,7 +12,8 @@
 
 <body data-name="{% block page %}{% endblock %}">
 
-  <nav id="nav-main" class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="wrapper container-fluid">
+  <nav id="nav-main" class="navbar navbar-expand-lg navbar-dark bg-dark main-header">
     <div class="container-fluid">
       <div class="navbar-header mr-auto">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label=""><span class="navbar-toggler-icon"></span></button>
@@ -43,17 +44,16 @@
     </div>
   </nav>
 
-  <div class="wrapper container-fluid my-1">
-  <!--  <div class="container justify-content-center my-1"> -->
-    <div class="row row-offcanvas row-offcanvas-left">
+
+    <div class="row row-offcanvas row-offcanvas-left mx-0">
   <!-- sidebar -->
-      <div class="col-md-3 sidebar-offcanvas d-none d-md-block" id="side-panel">
+      <div class="col-12 col-md-3 sidebar-offcanvas mx-0" id="side-panel">
         <header class="row">
           <form class="form-inline mx-3 my-1 w-100">
             <label class="sr-only" for="search-text">Название</label>
             <div class="input-group mb-2 w-100">
-              <div class="input-group-addon col-2 justify-content-center" id="stat-member-clear-filter"><i class="fa fa-filter fa-lg"></i></div>
-              <input type="text" class="form-control mx-auto col-10" id="stat-member-filter" placeholder="Площадка">
+              <div class="input-group-addon col-1 col-md-3 col-lg-2 justify-content-center" id="stat-member-clear-filter"><i class="fa fa-filter fa-lg"></i></div>
+              <input type="text" class="form-control mx-auto col-11 col-md-9 col-lg-10" id="stat-member-filter" placeholder="Площадка">
             </div>
           </form>
         </header>
@@ -66,7 +66,7 @@
         {% endif %}
       </div>
   <!-- sidebar -->
-      <div class="col-md-9 col-12" id="main">
+      <div class="col-12 col-md-9 main-container" id="main">
         <div id="content">
           {% block content %}
           {% endblock %}
@@ -81,6 +81,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js" integrity="sha256-1iYR6/Bs+CrdUVeCpCmb4JcYVWvvCUEgpSU7HS5xhsY=" crossorigin="anonymous"></script>
+  <script src="js/jquery.touchSwipe.min.js"></script>
   <script src="js/main.js"></script>
 </body>
 

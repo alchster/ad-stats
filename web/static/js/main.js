@@ -10,6 +10,10 @@ var $currentStatMember =  null;
 var $filterIcon = $("#stat-member-clear-filter i");
 var $statMember = $(".stat-member");
 var statMembers = {};
+var year = null;
+var month = null;
+
+var panelActive = false;
 
 // utils
 
@@ -52,6 +56,10 @@ function filterStatMembers(str) {
 }
 
 // helpers
+
+function toggleSidePanel(visible) {
+  $(".row-offcanvas").toggleClass("active");
+}
 
 function updateTable () {
   $rows = $("#stat-table tbody tr");
@@ -115,6 +123,7 @@ function getAjaxOpts(url, doAfter) {
 
 // events
 
+
 $("#stat-member-filter").on("change keyup paste", function () {
   var val = $(this).val();
   $statMember.unmark();
@@ -134,19 +143,26 @@ $("#stat-member-clear-filter").click(function () {
 });
 
 $("#list-members .stat-member").click(function(ev) {
-  var url, after;
   if ($currentStatMember)
     $currentStatMember.removeClass("active");
   $currentStatMember = $(this);
   $currentStatMember.addClass("active");
+  var url = "stat/" + $currentStatMember.data("name");
+  var after;
 
   switch (page) {
     case "index":
-      url = "stat/" + $currentStatMember.data("name");
       doAfter = setSlider;
       break;
+    case "months":
+      if (year) {
+        url += "/" + year;
+        if (month)
+          url += "/" + month;
+      }
+      doAfter = updateTable;
+      break;
     default:
-      url = "stat/" + $currentStatMember.data("name");
       doAfter = updateTable;
   }
   $.ajax(getAjaxOpts(url, doAfter));
@@ -208,13 +224,23 @@ $("#fetch").click(function() {
   }
 });
 
-$('[data-toggle=offcanvas]').click(function() {
-  console.log("sidebar toggle");
-  $("#side-panel").css("display:", "block!important");
-  $("#side-panel").css("width:", "100%!important");
-
-  $("#main").css("display:", "none!important");
-  $("#main").css("width:", "0%!important");
+$(".row-offcanvas").swipe({
+  swipeLeft: function () {
+    if (panelActive) {
+      panelActive = false;
+      $(this).removeClass("show-md-panel").addClass("hide-md-panel").removeClass("hide-md-panel");
+    }
+  },
+  swipeRight: function () {
+    if ($(this) == $slider) {
+      return;
+    }
+    if (!panelActive) {
+      panelActive = true;
+      $(this).removeClass("hide-md-panel").addClass("show-md-panel");
+    }
+  },
+  excludedElements: "input"
 });
 
 $(document).ready(function() {
