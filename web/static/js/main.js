@@ -232,9 +232,6 @@ $(".row-offcanvas").swipe({
     }
   },
   swipeRight: function () {
-    if ($(this) == $slider) {
-      return;
-    }
     if (!panelActive) {
       panelActive = true;
       $(this).removeClass("hide-md-panel").addClass("show-md-panel");
