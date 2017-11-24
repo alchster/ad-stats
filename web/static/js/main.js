@@ -12,6 +12,7 @@ var $statMember = $(".stat-member");
 var statMembers = {};
 var year = null;
 var month = null;
+var graph = null;
 
 var panelActive = false;
 
@@ -78,8 +79,8 @@ function setSlider() {
 
 function showLastDays() {
   var minShow = rowsLen - lastDays;
-  $("#date-from").html($($($rows[minShow]).children()[0]).html());
-  $("#date-to").html($($($rows[$rows.length - 1]).children()[0]).html());
+  $(".label-date-from").html($($($rows[minShow]).children()[0]).html());
+  $(".label-date-to").html($($($rows[$rows.length - 1]).children()[0]).html());
   for (i = 0; i < rowsLen; i++) {
     if (i < minShow)
       $($rows[i]).hide();
@@ -90,21 +91,29 @@ function showLastDays() {
 }
 
 function fillSummary() {
-  var shows = [], starts = [], clicks = [], percents = [];
+  var data = {
+    dates: [],
+    shows: [],
+    starts: [],
+    clicks: [],
+    percents: []
+  };
   $rows.each(function(index) {
       var $r = $($rows[index]);
       if ($r.css("display") != "none") {
         row = $r.children();
-        shows.push(getInt($(row[1]).html()));
-        starts.push(getInt($(row[2]).html()));
-        clicks.push(getInt($(row[3]).html()));
-        percents.push(parseFloat($(row[4]).html()));
+        data.dates.push($(row[0]).html());
+        data.shows.push(getInt($(row[1]).html()));
+        data.starts.push(getInt($(row[2]).html()));
+        data.clicks.push(getInt($(row[3]).html()));
+        data.percents.push(parseFloat($(row[4]).html()));
       }
   });
-  $($tableFooter[1]).html(separateThousands(sum(shows)));
-  $($tableFooter[2]).html(separateThousands(sum(starts)));
-  $($tableFooter[3]).html(separateThousands(sum(clicks)));
-  $($tableFooter[4]).html(formatFloat(avg(percents)));
+  $($tableFooter[1]).html(separateThousands(sum(data.shows)));
+  $($tableFooter[2]).html(separateThousands(sum(data.starts)));
+  $($tableFooter[3]).html(separateThousands(sum(data.clicks)));
+  $($tableFooter[4]).html(formatFloat(avg(data.percents)));
+  createGraph(data);
 }
 
 function getAjaxOpts(url, doAfter) {
@@ -119,6 +128,55 @@ function getAjaxOpts(url, doAfter) {
       doAfter();
     }
   };
+}
+
+function createGraph(data) {
+  var shows = [], starts = [], clicks = [];
+  var len = data.shows.length;
+  for (var i = 0; i < len; i++) {
+    shows.push({
+      label: data.dates[i],
+      y: data.shows[i]
+    });
+    starts.push({
+      label: data.dates[i],
+      y: data.starts[i]
+    });
+    clicks.push({
+      label: data.dates[i],
+      y: data.clicks[i]
+    });
+  }
+  graph = new CanvasJS.Chart("data-graph", {
+//    width: "100%",
+    responsive: true,
+    maintainAspectRatio: false,
+    data: [
+      {
+        type: "line",
+        name: "Показы",
+        color: "#0000FF",
+        toolTipContent: "{label}: {y} ",
+        dataPoints: shows,
+        showInLegend: true,
+      },
+      {
+        type: "line",
+        name: "Старты",
+        toolTipContent: "{label}: {y}",
+        dataPoints: starts,
+        showInLegend: true,
+      },
+      {
+        type: "line",
+        name: "Клики",
+        toolTipContent: "{label}: {y}",
+        dataPoints: clicks,
+        showInLegend: true,
+      },
+    ],
+  });
+  graph.render();
 }
 
 // events
@@ -142,11 +200,19 @@ $("#stat-member-clear-filter").click(function () {
   $("#list-members .stat-member").show();
 });
 
+$("#graph-tab").click(function () {
+  window.setTimeout(function() { 
+    window.dispatchEvent(new Event('resize'));
+  }, 0); 
+});
+
 $("#list-members .stat-member").click(function(ev) {
   if ($currentStatMember)
     $currentStatMember.removeClass("active");
   $currentStatMember = $(this);
   $currentStatMember.addClass("active");
+  panelActive = false;
+  $(".row-offcanvas").removeClass("show-md-panel").addClass("hide-md-panel").removeClass("hide-md-panel");
   var url = "stat/" + $currentStatMember.data("name");
   var after;
 
@@ -181,7 +247,9 @@ $(".list-group .list-group-item").click(function(ev) {
 });
 
 $slider.on("input change", function(ev) {
-  lastDays = -ev.target.value;
+  var val = $(this).val();
+  $slider.val(val);
+  lastDays = -val;
   showLastDays();
 });
 

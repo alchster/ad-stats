@@ -32,7 +32,7 @@ input[type='range']::-webkit-slider-thumb {
               50% 50% 
               no-repeat;
   display: none;
-  height:     100%;
+  height:     90vh;
   left:       0;
   position: absolute;
   top:        0;
@@ -109,9 +109,6 @@ mark {
     width: 100%;
   }
 */
-  .row-offcanvas-left{
-    margin-top: 1em;
-  }
   .row-offcanvas-left .sidebar-offcanvas{
     background-color: rgb(255,255,255);
     z-index: 2;

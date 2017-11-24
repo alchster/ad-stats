@@ -13,76 +13,43 @@
 <body data-name="{% block page %}{% endblock %}">
 
   <div class="wrapper container-fluid">
-  <nav id="nav-main" class="navbar navbar-expand-lg navbar-dark bg-dark main-header">
-    <div class="container-fluid">
-      <div class="navbar-header mr-auto">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label=""><span class="navbar-toggler-icon"></span></button>
-        <span class="navbar-brand h1">Ad stats</span>
-      </div>
-      <div class="collapse navbar-collapse" id="main-menu">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item mr-lg-1 my-1 btn btn-sm"><a class="nav-link" href="index">Статистика</a></li>
-        <li class="nav-item mr-lg-1 my-1 btn btn-sm disabled"><a class="nav-link" href="months">По месяцам</a></li>
-        <li class="nav-item mr-lg-1 my-1 btn btn-sm"><a class="nav-link" href="all">Весь период</a></li>
-      </ul>
-      </div>
+    {% include "_header.html" %}
 
-      <div class="navbar-header ml-auto">
-        <ul class="nav navbar-nav row">
-          <li class="nav-item mr-2">
-            <a class="btn btn-outline-secondary my-1" href="fetch">
-              <i class="fa fa-download fa-lg"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-outline-secondary my-1" href="config">
-              <i class="fa fa-cogs fa-lg"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <div class="row row-offcanvas row-offcanvas-left mx-0 my-3">
 
-
-    <div class="row row-offcanvas row-offcanvas-left mx-0">
-  <!-- sidebar -->
-      <div class="col-12 col-md-3 sidebar-offcanvas mx-0" id="side-panel">
-        <header class="row">
-          <form class="form-inline mx-3 my-1 w-100">
-            <label class="sr-only" for="search-text">Название</label>
-            <div class="input-group mb-2 w-100">
-              <div class="input-group-addon col-1 col-md-3 col-lg-2 justify-content-center" id="stat-member-clear-filter"><i class="fa fa-filter fa-lg"></i></div>
-              <input type="text" class="form-control mx-auto col-11 col-md-9 col-lg-10" id="stat-member-filter" placeholder="Площадка">
-            </div>
-          </form>
-        </header>
-        {% if urls is not none %}
-        <ul class="nav nav-stacked flex-column" id="list-members">
-          {% for url in urls %}
-          <li class="nav-item btn btn-sm btn-light stat-member mb-1" data-name="{{ url.table }}">{{ url.name }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-  <!-- sidebar -->
+      {% include "_sidebar.html" %}
+      
       <div class="col-12 col-md-9 main-container" id="main">
         <div id="content">
-          {% block content %}
-          {% endblock %}
+          <ul class="nav nav-tabs" id="views-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link text-dark active" id="table-tab" data-toggle="tab" role="tab" aria-controls="view-table" aria-selected="true" href="#view-table">Таблица</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark" id="graph-tab" data-toggle="tab" role="tab" aria-controls="view-graph" aria-selected="false" href="#view-graph">Динамика</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="views-content">
+            <div class="tab-pane active" id="view-table" role="tabpanel" aria-labelledby="table-tab">
+              {% block content %}
+              {% endblock %}
+            </div>
+            <div class="tab-pane" id="view-graph" role="tabpanel" aria-labelledby="graph-tab">
+              <div class="w-100">
+              {% block graph_head %}
+              {% endblock %}
+              </div>
+              <div class="graph-container w-100 my-3" id="data-graph"></div>
+            </div>
+          </div>
         </div>
         <div class="modal-block"></div>
       </div>
-    </div>
+   </div>
 
   </div> <!-- .wrapper.container-fluid -->
 
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.0/jquery.mark.min.js" integrity="sha256-1iYR6/Bs+CrdUVeCpCmb4JcYVWvvCUEgpSU7HS5xhsY=" crossorigin="anonymous"></script>
-  <script src="js/jquery.touchSwipe.min.js"></script>
-  <script src="js/main.js"></script>
+  {% include "_js.html" %}
 </body>
 
 </html>
