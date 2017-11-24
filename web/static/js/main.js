@@ -148,14 +148,18 @@ function createGraph(data) {
     });
   }
   graph = new CanvasJS.Chart("data-graph", {
-//    width: "100%",
     responsive: true,
     maintainAspectRatio: false,
+    legend: {
+      verticalAlign: "top",
+      horizontalAlign: "right",
+    },
     data: [
       {
         type: "line",
         name: "Показы",
-        color: "#0000FF",
+        color: "blue",
+        indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y} ",
         dataPoints: shows,
         showInLegend: true,
@@ -163,6 +167,8 @@ function createGraph(data) {
       {
         type: "line",
         name: "Старты",
+        color: "red",
+        indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y}",
         dataPoints: starts,
         showInLegend: true,
@@ -170,6 +176,8 @@ function createGraph(data) {
       {
         type: "line",
         name: "Клики",
+        color: "green",
+        indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y}",
         dataPoints: clicks,
         showInLegend: true,

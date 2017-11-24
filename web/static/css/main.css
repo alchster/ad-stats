@@ -5,7 +5,6 @@ html, body{
 .wrapper{
   padding: 0;
 }
-
 input[type=range]{
   -webkit-appearance:none;
   -moz-appearance:none;
@@ -29,13 +28,12 @@ input[type='range']::-webkit-slider-thumb {
   background: #fff;
   background: rgba(0,0,0,.05) 
               url('../img/ajax-loader.gif') 
-              50% 50% 
+              50% 50vh 
               no-repeat;
   display: none;
-  height:     90vh;
-  left:       0;
+  height:     100%;
+  top: 0;
   position: absolute;
-  top:        0;
   width:      100%;
   z-index:    1000;
 }
@@ -100,15 +98,6 @@ mark {
     position: relative;
     overflow: hidden;
   }
-/*
-  .wrapper{
-    position: absolute;
-    overflow: hidden;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-*/
   .row-offcanvas-left .sidebar-offcanvas{
     background-color: rgb(255,255,255);
     z-index: 2;
@@ -122,69 +111,18 @@ mark {
     padding-bottom: 0.5em;
     left: 0;
   }
-
   .row-offcanvas-left.hide-md-panel .sidebar-offcanvas{
     animation: show-panel 0.5s ease reverse forwards;
   }
- 
   .row-offcanvas-left.show-md-panel .sidebar-offcanvas{
     animation: show-panel 0.5s ease normal forwards;
     left: 0;
   }
-
   .row-offcanvas-left.hide-md-panel .main-container{
     animation: show-main 0.5s ease normal forwards;
-/*    display: block!important; */
   }
   .row-offcanvas-left.show-md-panel .main-container{
     animation: show-main 0.5s ease reverse forwards;
     left: 100%
-/*    display: none!important; */
   }
-
-
-/*
-  html, body{
-    overflow: scroll;
-    overflow-x: hidden;
-  }
-  ::-webkit-scrollbar {
-      background: transparent;
-      width: 0px;
-  }
-/* optional: show position indicator in red */
-/*
-::-webkit-scrollbar-thumb {
-    background: #FF0000;
-}
-
-  .row-offcanvas {
-    position: relative;
-    -webkit-transition: all 0.25s ease-out;
-    -moz-transition: all 0.25s ease-out;
-    transition: all 0.25s ease-out;
-  }
-*/
-/*
-  .row-offcanvas-left .sidebar-offcanvas{
-    display: none!important;
-  }
-
-  .row-offcanvas-left.active .sidebar-offcanvas{
-    display: block!important;
-  }
-
- .row-offcanvas-left .main-container{
-    display: block!important;
-  }
-  .row-offcanvas-left.active .main-container{
-    display: none!important;
-  }
-
-/*
-  .sidebar-offcanvas {
-    position: relative;
-    top: 0;
-  }
-  */
 }
