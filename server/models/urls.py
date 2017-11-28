@@ -10,7 +10,7 @@ class URLs(Base):
     __tablename__ = "urls"
     name = Column(Unicode(100), nullable=False)
     table = Column(String(100), unique=True, nullable=False)
-    url = Column(String(256), primary_key=True)
+    url = Column(String(180), primary_key=True)
     username = Column(String(50), nullable=False)
     password = Column(String(50), nullable=False)
     created = Column(DateTime(timezone=True), default=datetime.datetime.now)

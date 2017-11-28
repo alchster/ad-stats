@@ -1,4 +1,10 @@
-from flask import Flask, url_for
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ModuleNotFoundError:
+    pass
+
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from .views import bp
