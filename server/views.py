@@ -120,9 +120,8 @@ def update():
     return render_template("success.html")
 
 
-@bp.route("/fetchdata")
-@auth.require
-def getdata():
+@bp.route("/service/fetchdata")
+def service_fetchdata():
     def get_parser(session, table_name):
         # TODO: create table if not exists
         DataTable = Data.model(table_name)
@@ -186,3 +185,9 @@ def getdata():
 
     return Response(stream_with_context(process()),
                     mimetype="text/event-stream")
+
+
+@bp.route("/fetchdata")
+@auth.require
+def fetchdata():
+    return service_fetchdata()

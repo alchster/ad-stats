@@ -20,10 +20,10 @@ def register_filters(app):
 
 def create_server(options, debug=False):
     app = Flask("Ad-stats server")
-    app.config['SQLALCHEMY_DATABASE_URI'] = options.db_uri()
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = debug
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    app.config["SQLALCHEMY_DATABASE_URI"] = options.db_uri()
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_ECHO"] = debug
+    app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
     app.secret_key = options.secret_key()
     register_filters(app)
     app.db = SQLAlchemy(app)
