@@ -9,11 +9,10 @@ from sqlalchemy import extract
 
 from .util.reader import Reader
 from .util.tablename import tablename
-from .util import funcs
 from .models.urls import URLs
 from .models.data import Data
-
 from .fetcher import Fetcher
+from .auth import Auth as auth
 
 bp = Blueprint("ad-stats", __name__,
                static_folder="../web/static",
@@ -23,6 +22,7 @@ bp = Blueprint("ad-stats", __name__,
 
 @bp.route("/", defaults={"page": "index"})
 @bp.route("/<page>")
+@auth.require
 def main(page):
     urls = current_app.db.session.query(URLs).all()
     try:
@@ -32,6 +32,7 @@ def main(page):
 
 
 @bp.route("/months")
+@auth.require
 def months():
     session = current_app.db.session
     urls = session.query(URLs).all()
@@ -41,6 +42,7 @@ def months():
 @bp.route("/stat/<name>")
 @bp.route("/stat/<name>/<int:year>")
 @bp.route("/stat/<name>/<int:year>/<int:month>")
+@auth.require
 def stat(name, year=None, month=None):
     logging.debug("GET: stat: %s , year: %s, month: %s",
                   name, str(year), str(month))
@@ -56,16 +58,18 @@ def stat(name, year=None, month=None):
 
 
 @bp.route("/config", methods=["POST"])
+@auth.require
 def config_post():
     try:
         bp.reader = Reader(request.files["file"].read())
         return redirect("prepare")
-    except:
+    except Exception:
         return render_template("error.html")
     return render_template("404.html")
 
 
 @bp.route("/prepare")
+@auth.require
 def prepare():
     with bp.reader as reader:
         bp.separator = URLs.separate(current_app.db.session, reader)
@@ -74,6 +78,7 @@ def prepare():
 
 
 @bp.route("/update")
+@auth.require
 def update():
     if bp.separator is None:
         return render_template("error.html")
@@ -116,6 +121,7 @@ def update():
 
 
 @bp.route("/fetchdata")
+@auth.require
 def getdata():
     def get_parser(session, table_name):
         # TODO: create table if not exists
@@ -139,7 +145,7 @@ def getdata():
             for i in range(1, 4):
                 try:
                     row[i] = int(row[i])
-                except:
+                except ValueError:
                     row[i] = 0
 
             row = dict(zip(["date", "shows", "starts", "clicks"], row))
