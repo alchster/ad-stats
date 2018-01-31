@@ -20,6 +20,10 @@
       {% include "_sidebar.html" %}
       
       <div class="col-12 col-md-9 main-container" id="main">
+        <div>
+              {% block before_content %}
+              {% endblock %}
+        </div>
         <div id="content">
           <ul class="nav nav-tabs" id="views-tabs" role="tablist">
             <li class="nav-item">

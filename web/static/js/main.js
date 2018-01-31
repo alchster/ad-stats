@@ -10,6 +10,7 @@ var $currentStatMember =  null;
 var $filterIcon = $("#stat-member-clear-filter i");
 var $statMember = $(".stat-member");
 var statMembers = {};
+var months = null;
 var year = null;
 var month = null;
 var graph = null;
@@ -77,6 +78,52 @@ function setSlider() {
   showLastDays();
 }
 
+function setYearsButtons() {
+  var $years = $("#years");
+  var $templ = $($years.children()[0]);
+  $years.empty();
+  $templ.appendTo($years);
+  
+  for (var y in months) {
+    var el = $templ.clone();
+    el.html(y).appendTo($years).show();
+    if (y == year) {
+      el.addClass("active");
+    }
+  }
+}
+
+function setMonthsButtons() {
+  $("#months > li").removeClass("disabled active");
+  var mthsList = $("#months").children();
+  mthsList.each(function(i) {
+    var m = i + 1;
+    if (m == month) {
+      $(mthsList[i]).addClass("active");
+    }
+    if (!months[year].includes(m)) { // TODO: not working with ie
+      $(mthsList[i]).addClass("disabled");
+    }
+  });
+}
+
+function updateMonthsData() {
+  setYearsButtons();
+  setMonthsButtons();
+  var url = "stat/" + $currentStatMember.data("name") + "/" + year + "/" + month;
+  $.ajax(getAjaxOpts(url, updateTable));
+}
+
+function updateMonths(member) {
+  if (!member) return;
+  $.getJSON(member + "/months", function (data) {
+    desc = function (a, b) {return b-a;};
+    months = data;
+    year = Object.keys(months).sort(desc)[0];
+    month = months[year].sort(desc)[0];
+  });
+}
+
 function showLastDays() {
   var minShow = rowsLen - lastDays;
   $(".label-date-from").html($($($rows[minShow]).children()[0]).html());
@@ -125,7 +172,11 @@ function getAjaxOpts(url, doAfter) {
     success: function(data) {
       $modal.hide();
       $("#stat-table").html(data);
-      doAfter();
+      if(typeof(doAfter) == "object") {
+        doAfter.forEach(function(action) { action(); });
+      }
+      else if(typeof(doAfter) == "function")
+        doAfter();
     }
   };
 }
@@ -214,27 +265,38 @@ $("#graph-tab").click(function () {
   }, 0); 
 });
 
+$("body").on("click", "#years .list-inline-item", function() {
+  if($(this).hasClass("active")) return;
+  year = $(this).html();
+  month = months[year].sort(desc)[0];
+  updateMonthsData();
+});
+
+$("#months .list-inline-item").click(function() {
+  if($(this).hasClass("disabled")||$(this).hasClass("active")) return;
+  month = $("#months .list-inline-item").index(this) + 1;
+  updateMonthsData();
+});
+
 $("#list-members .stat-member").click(function(ev) {
   if ($currentStatMember)
     $currentStatMember.removeClass("active");
   $currentStatMember = $(this);
   $currentStatMember.addClass("active");
+
+  updateMonths($currentStatMember.html());
+
   panelActive = false;
   $(".row-offcanvas").removeClass("show-md-panel").addClass("hide-md-panel").removeClass("hide-md-panel");
   var url = "stat/" + $currentStatMember.data("name");
-  var after;
+  var doAfter;
 
   switch (page) {
     case "index":
       doAfter = setSlider;
       break;
     case "months":
-      if (year) {
-        url += "/" + year;
-        if (month)
-          url += "/" + month;
-      }
-      doAfter = updateTable;
+      doAfter = updateMonthsData;
       break;
     default:
       doAfter = updateTable;

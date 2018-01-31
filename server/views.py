@@ -2,10 +2,10 @@ import logging
 from datetime import datetime, MINYEAR
 
 from flask import Blueprint, render_template, redirect, request, current_app, \
-    Response, stream_with_context
+    Response, stream_with_context, jsonify, abort
 from jinja2 import TemplateNotFound
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 
 from .util.reader import Reader
 from .util.tablename import tablename
@@ -191,3 +191,23 @@ def service_fetchdata():
 @auth.require
 def fetchdata():
     return service_fetchdata()
+
+
+@bp.route("/<name>/months")
+# @auth.require
+def months_data(name):
+    session = current_app.db.session
+    months = {}
+    try:
+        model = Data.model(
+            session.query(URLs).filter_by(name=name).first().table)
+    except AttributeError:
+        return abort(404)
+    for (date, ) in session.query(model.date).order_by(model.date).all():
+        year = date.year
+        if year not in months:
+            months[year] = []
+        month = date.month
+        if month not in months[year]:
+            months[year].append(month)
+    return jsonify(months)

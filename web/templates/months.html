@@ -1,11 +1,10 @@
 {% extends "_base.html" %}
 {% block title %}Месяцы - Ad stats{% endblock %}
 {% block page %}months{% endblock %}
-{% block content %}
+{% block before_content %}
 <div class="m-4">
   <ul class="row list-inline" id="years">
-    <li class="list-inline-item btn btn-light m-1">2016</li>
-    <li class="list-inline-item btn btn-light m-1">2017</li>
+    <li class="list-inline-item btn btn-light m-1" style="display: none;"></li>
   </ul>
   <ul class="row list-inline" id="months">
     <li class="list-inline-item btn btn-light m-1">январь</li>
@@ -22,6 +21,8 @@
     <li class="list-inline-item btn btn-light m-1">декабрь</li>
   </ul>
 </div>
+{% endblock %}
+{% block content %}
 <div>
   <div id="stat-table"></div>
   <div class="modal-block"></div>
