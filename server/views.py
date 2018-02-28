@@ -230,15 +230,13 @@ def report_post():
 
     try:
         date_from = datetime.strptime(request.form["from"], "%Y-%m-%d").date()
-        date_to = datetime.strptime(request.form["to"], "%Y-%m-%d").date() \
-            + timedelta(days=1)
+        date_to = datetime.strptime(request.form["to"], "%Y-%m-%d").date()
     except ValueError:
         return redirect("/report")
     session = current_app.db.session
     xlsx = Writer()
-    fname = REPORT_FILENAME \
-        % (date_from.strftime("%Y%m%d"),
-           (date_to - timedelta(days=1)).strftime("%Y%m%d"))
+    fname = REPORT_FILENAME % (date_from.strftime("%Y%m%d"),
+                               date_to.strftime("%Y%m%d"))
 
     for (table, ) in session.query(URLs.table).all():
         model = Data.model(table)

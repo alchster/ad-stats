@@ -156,7 +156,7 @@ class Writer:
                         column_info["format"])
             cols += 1
         try:
-            percent = starts / shows
+            percent = shows / starts
         except ZeroDivisionError:
             percent = 0
         sheet.write(row, cols, percent, self.formats["percent"])
@@ -169,11 +169,11 @@ class Writer:
     def _add_footer(self, sheet, row_number):
         if self.autosum:
             for col, info in self.columns.items():
-                if info["format"] == "integer":
+                if info["type"] == "integer":
                     if row_number > 2:
                         val = "=SUM(%(letter)s%(first)d:%(letter)s%(last)d)" %\
                                 {
-                                    "letter": chr(ord("A") + col),
+                                    "letter": chr(ord("A") + info["column"]),
                                     "first": 2,
                                     "last": row_number
                                 }
@@ -183,8 +183,9 @@ class Writer:
                     val = "Total"
                 else:
                     val = ""
-                f = self.formats["footer"] or None
-                sheet.write(row_number, info["column"], val, f)
+                print(col, val)
+                fmt = self.formats["footer"] or None
+                sheet.write(row_number, info["column"], val, fmt)
                 sheet.autofilter(0, 0, row_number - 1, 4)
 
     def _get_width(self, data_type):
