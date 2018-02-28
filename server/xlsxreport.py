@@ -183,7 +183,6 @@ class Writer:
                     val = "Total"
                 else:
                     val = ""
-                print(col, val)
                 fmt = self.formats["footer"] or None
                 sheet.write(row_number, info["column"], val, fmt)
                 sheet.autofilter(0, 0, row_number - 1, 4)
