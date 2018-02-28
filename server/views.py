@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime, MINYEAR
+from datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, redirect, request, current_app, \
-    Response, stream_with_context, jsonify, abort
+    Response, stream_with_context, jsonify, abort, send_file
 from jinja2 import TemplateNotFound
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import extract, func
+from sqlalchemy import extract
 
 from .util.reader import Reader
 from .util.tablename import tablename
@@ -13,6 +13,10 @@ from .models.urls import URLs
 from .models.data import Data
 from .fetcher import Fetcher
 from .auth import Auth as auth
+from .xlsxreport import Writer
+
+XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+REPORT_FILENAME = "report_%s-%s.xlsx"
 
 bp = Blueprint("ad-stats", __name__,
                static_folder="../web/static",
@@ -148,7 +152,9 @@ def service_fetchdata():
                 except ValueError:
                     row[i] = 0
 
-            row = dict(zip(["date", "shows", "starts", "clicks", "viewability"], row))
+            row = dict(
+                zip(["date", "starts", "shows", "clicks", "viewability"],
+                    row))
             data = find(row)
             if data is None:
                 session.add(DataTable(**row))
@@ -213,3 +219,35 @@ def months_data(name):
         if month not in months[year]:
             months[year].append(month)
     return jsonify(months)
+
+
+@bp.route("/report", methods=["POST"])
+# @auth.require
+def report_post():
+    def process(header, iterator):
+        for row in iterator:
+            yield {col: row.__dict__[col] for col in header}
+
+    try:
+        date_from = datetime.strptime(request.form["from"], "%Y-%m-%d").date()
+        date_to = datetime.strptime(request.form["to"], "%Y-%m-%d").date() \
+            + timedelta(days=1)
+    except ValueError:
+        return redirect("/report")
+    session = current_app.db.session
+    xlsx = Writer()
+    fname = REPORT_FILENAME \
+        % (date_from.strftime("%Y%m%d"),
+           (date_to - timedelta(days=1)).strftime("%Y%m%d"))
+
+    for (table, ) in session.query(URLs.table).all():
+        model = Data.model(table)
+        header = [c.name for c in model.__table__.columns]
+        f = session.query(model).filter(model.date.between(date_from,
+                                                           date_to))
+        xlsx.write_sheet(table, header, process(header,
+                                                f.order_by(model.date)))
+    return send_file(xlsx.bytes(),
+                     attachment_filename=fname,
+                     as_attachment=True,
+                     mimetype=XLSX_MIME)

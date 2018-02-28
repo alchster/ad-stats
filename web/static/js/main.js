@@ -151,8 +151,8 @@ function fillSummary() {
       if ($r.css("display") != "none") {
         row = $r.children();
         data.dates.push($(row[0]).html());
-        data.shows.push(getInt($(row[1]).html()));
-        data.starts.push(getInt($(row[2]).html()));
+        data.starts.push(getInt($(row[1]).html()));
+        data.shows.push(getInt($(row[2]).html()));
         data.clicks.push(getInt($(row[3]).html()));
         data.va.push(getInt($(row[4]).html()));
         data.percents.push(parseFloat($(row[5]).html()));

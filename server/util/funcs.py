@@ -4,7 +4,7 @@ def separate_thousands(num):
 
 def starts_conversion(data):
     try:
-        cc = data.starts / data.shows
+        cc = data.shows / data.starts
     except ZeroDivisionError:
         cc = 0.0
     return "{:.2f}".format(cc * 100)
