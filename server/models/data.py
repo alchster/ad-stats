@@ -12,6 +12,7 @@ class Data(object):
     starts = Column(Integer, nullable=False, default=0)
     shows = Column(Integer, nullable=False, default=0)
     clicks = Column(Integer, nullable=False, default=0)
+    viewability = Column(Integer, nullable=False, default=0)
 
     @staticmethod
     def model(name):

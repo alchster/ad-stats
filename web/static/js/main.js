@@ -143,6 +143,7 @@ function fillSummary() {
     shows: [],
     starts: [],
     clicks: [],
+    va: [],
     percents: []
   };
   $rows.each(function(index) {
@@ -153,13 +154,15 @@ function fillSummary() {
         data.shows.push(getInt($(row[1]).html()));
         data.starts.push(getInt($(row[2]).html()));
         data.clicks.push(getInt($(row[3]).html()));
-        data.percents.push(parseFloat($(row[4]).html()));
+        data.va.push(getInt($(row[4]).html()));
+        data.percents.push(parseFloat($(row[5]).html()));
       }
   });
   $($tableFooter[1]).html(separateThousands(sum(data.shows)));
   $($tableFooter[2]).html(separateThousands(sum(data.starts)));
   $($tableFooter[3]).html(separateThousands(sum(data.clicks)));
-  $($tableFooter[4]).html(formatFloat(avg(data.percents)));
+  $($tableFooter[4]).html(separateThousands(sum(data.va)));
+  $($tableFooter[5]).html(formatFloat(avg(data.percents)));
   createGraph(data);
 }
 
@@ -182,7 +185,7 @@ function getAjaxOpts(url, doAfter) {
 }
 
 function createGraph(data) {
-  var shows = [], starts = [], clicks = [];
+  var shows = [], starts = [], clicks = [], va = [];
   var len = data.shows.length;
   for (var i = 0; i < len; i++) {
     shows.push({
@@ -196,6 +199,10 @@ function createGraph(data) {
     clicks.push({
       label: data.dates[i],
       y: data.clicks[i]
+    });
+    va.push({
+      label: data.dates[i],
+      y: data.va[i]
     });
   }
   graph = new CanvasJS.Chart("data-graph", {
@@ -231,6 +238,15 @@ function createGraph(data) {
         indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y}",
         dataPoints: clicks,
+        showInLegend: true,
+      },
+      {
+        type: "line",
+        name: "Видимость",
+        color: "violet",
+        indexLabelOrientation: "vertical",
+        toolTipContent: "{label}: {y}",
+        dataPoints: va,
         showInLegend: true,
       },
     ],

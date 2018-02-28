@@ -3,9 +3,10 @@
   <thead class="text-white bg-dark">
     <tr>
       <th class="w-20 ad-stat-date">Дата</th>
-      <th class="w-60 ad-stat-shows">Показы</th>
+      <th class="w-50 ad-stat-shows">Показы</th>
       <th class="w-10 ad-stat-starts">Старты</th>
       <th class="w-10 ad-stat-clicks">Клики</th>
+      <th class="w-10 ad-stat-clicks">Видимость</th>
       <th class="w-10 ad-stat-percent">%</th>
     </tr>
   </thead>
@@ -13,9 +14,10 @@
     {% for row in data %}
     <tr>
       <td class="w-20 ad-stat-date">{{ row.date }}</td>
-      <td class="w-60 ad-stat-shows">{{ row.shows | separate_thousands }}</td>
+      <td class="w-50 ad-stat-shows">{{ row.shows | separate_thousands }}</td>
       <td class="w-10 ad-stat-starts">{{ row.starts | separate_thousands }}</td>
       <td class="w-10 ad-stat-clicks">{{ row.clicks | separate_thousands }}</td>
+      <td class="w-10 ad-stat-clicks">{{ row.viewability | separate_thousands }}</td>
       <td class="w-10 ad-stat-percent">{{ row | starts_conversion }}</td>
     </tr>
     {% endfor %}
@@ -23,8 +25,9 @@
   <tfoot class="text-white bg-dark">
     <tr>
       <th class="w-20 ad-stat-date">Всего</th>
-      <th class="w-60 ad-stat-shows">0</th>
+      <th class="w-50 ad-stat-shows">0</th>
       <th class="w-10 ad-stat-starts">0</th>
+      <th class="w-10 ad-stat-clicks">0</th>
       <th class="w-10 ad-stat-clicks">0</th>
       <th class="w-10 ad-stat-percent">0</th>
     </tr>

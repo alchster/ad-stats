@@ -135,19 +135,20 @@ def service_fetchdata():
         def same(elem, row):
             if elem.shows == row["shows"] \
                     and elem.starts == row["starts"] \
-                    and elem.clicks == row["clicks"]:
+                    and elem.clicks == row["clicks"] \
+                    and elem.viewability == row["viewability"]:
                 return True
             return False
 
         def parser(row):
             row[0] = datetime.strptime(row[0], "%Y-%m-%d").date()
-            for i in range(1, 4):
+            for i in range(1, 5):
                 try:
                     row[i] = int(row[i])
                 except ValueError:
                     row[i] = 0
 
-            row = dict(zip(["date", "shows", "starts", "clicks"], row))
+            row = dict(zip(["date", "shows", "starts", "clicks", "viewability"], row))
             data = find(row)
             if data is None:
                 session.add(DataTable(**row))
@@ -157,6 +158,7 @@ def service_fetchdata():
                 data.shows = row["shows"]
                 data.starts = row["starts"]
                 data.clicks = row["clicks"]
+                data.viewability = row["viewability"]
             return row
 
         return parser
