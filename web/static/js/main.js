@@ -158,8 +158,8 @@ function fillSummary() {
         data.percents.push(parseFloat($(row[5]).html()));
       }
   });
-  $($tableFooter[1]).html(separateThousands(sum(data.shows)));
-  $($tableFooter[2]).html(separateThousands(sum(data.starts)));
+  $($tableFooter[1]).html(separateThousands(sum(data.starts)));
+  $($tableFooter[2]).html(separateThousands(sum(data.shows)));
   $($tableFooter[3]).html(separateThousands(sum(data.clicks)));
   $($tableFooter[4]).html(separateThousands(sum(data.va)));
   $($tableFooter[5]).html(formatFloat(avg(data.percents)));
@@ -216,7 +216,7 @@ function createGraph(data) {
       {
         type: "line",
         name: "Показы",
-        color: "blue",
+        color: "red",
         indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y} ",
         dataPoints: shows,
@@ -225,7 +225,7 @@ function createGraph(data) {
       {
         type: "line",
         name: "Старты",
-        color: "red",
+        color: "blue",
         indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y}",
         dataPoints: starts,
