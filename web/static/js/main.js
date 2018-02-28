@@ -215,20 +215,20 @@ function createGraph(data) {
     data: [
       {
         type: "line",
-        name: "Показы",
-        color: "red",
-        indexLabelOrientation: "vertical",
-        toolTipContent: "{label}: {y} ",
-        dataPoints: shows,
-        showInLegend: true,
-      },
-      {
-        type: "line",
         name: "Старты",
         color: "blue",
         indexLabelOrientation: "vertical",
         toolTipContent: "{label}: {y}",
         dataPoints: starts,
+        showInLegend: true,
+      },
+      {
+        type: "line",
+        name: "Показы",
+        color: "red",
+        indexLabelOrientation: "vertical",
+        toolTipContent: "{label}: {y} ",
+        dataPoints: shows,
         showInLegend: true,
       },
       {
