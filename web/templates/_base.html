@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body data-name="{% block page %}{% endblock %}">
+
+  <div class="wrapper container-fluid">
+    {% include "_header.html" %}
+
+    <div class="row row-offcanvas row-offcanvas-left mx-0 my-3">
+
+      {% include "_sidebar.html" %}
+      
+      <div class="col-12 col-md-9 main-container" id="main">
+        <div>
+              {% block before_content %}
+              {% endblock %}
+        </div>
+        <div id="content">
+          <ul class="nav nav-tabs" id="views-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link text-dark active" id="table-tab" data-toggle="tab" role="tab" aria-controls="view-table" aria-selected="true" href="#view-table">Таблица</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark" id="graph-tab" data-toggle="tab" role="tab" aria-controls="view-graph" aria-selected="false" href="#view-graph">Динамика</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="views-content">
+            <div class="tab-pane active" id="view-table" role="tabpanel" aria-labelledby="table-tab">
+              {% block content %}
+              {% endblock %}
+            </div>
+            <div class="tab-pane" id="view-graph" role="tabpanel" aria-labelledby="graph-tab">
+              <div class="w-100">
+              {% block graph_head %}
+              {% endblock %}
+              </div>
+              <div class="graph-container w-100 my-3" id="data-graph"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-block"></div>
+      </div>
+   </div>
+
+  </div> <!-- .wrapper.container-fluid -->
+
+  {% include "_js.html" %}
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{% extends '_base_config.html' %}
+{% block title %}Отчет - Ad stats{% endblock %}
+{% block page %}config{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <form class="my-3" method="post" enctype="application/x-www-form-urlencoded" id="form-report">
+    <div class="form-group row justify-content-center my-3">
+      <input type="date" name="from" class="col form-control mx-2">
+      <span class="col col-form-label">&ndash;</span>
+      <input type="date" name="to" class="col form-control mx-2">
+    </div>
+    <div class="row justify-content-center my-3">
+      <button class="btn btn-dark my-2" id="form-report-submit">Сформировать отчет</button>
+    </div>
+  </form>
+  
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "_base.html" %}
+{% block title %}Месяцы - Ad stats{% endblock %}
+{% block page %}months{% endblock %}
+{% block before_content %}
+<div class="m-4">
+  <ul class="row list-inline" id="years">
+    <li class="list-inline-item btn btn-light m-1" style="display: none;"></li>
+  </ul>
+  <ul class="row list-inline" id="months">
+    <li class="list-inline-item btn btn-light m-1">январь</li>
+    <li class="list-inline-item btn btn-light m-1">февраль</li>
+    <li class="list-inline-item btn btn-light m-1">март</li>
+    <li class="list-inline-item btn btn-light m-1">апрель</li>
+    <li class="list-inline-item btn btn-light m-1">май</li>
+    <li class="list-inline-item btn btn-light m-1">июнь</li>
+    <li class="list-inline-item btn btn-light m-1">июль</li>
+    <li class="list-inline-item btn btn-light m-1">август</li>
+    <li class="list-inline-item btn btn-light m-1">сентябрь</li>
+    <li class="list-inline-item btn btn-light m-1">октябрь</li>
+    <li class="list-inline-item btn btn-light m-1">ноябрь</li>
+    <li class="list-inline-item btn btn-light m-1">декабрь</li>
+  </ul>
+</div>
+{% endblock %}
+{% block content %}
+<div>
+  <div id="stat-table"></div>
+  <div class="modal-block"></div>
+</div>
+{% endblock %}

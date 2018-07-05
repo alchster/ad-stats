@@ -3,17 +3,14 @@ import re
 import sys
 import xlrd
 
-from .util import get_option_value
-
 
 class Reader:
-    def __init__(self, filename, config={}):
+    def __init__(self, file_contents, config=None):
         self._configure(config)
         try:
-            self.book = xlrd.open_workbook(filename)
-            self.filename = filename
+            self.book = xlrd.open_workbook(file_contents=file_contents)
         except Exception as e:
-            logging.error("Unable to open input file %s: %s", filename, e)
+            logging.error("Unable to read input: %s", e)
             sys.exit(1)
         self.sheet = self.book.sheet_by_index(self.sheet_number)
 
@@ -30,28 +27,41 @@ class Reader:
                             val = int(val)
                         str_val = self.string(str(val))
                         if col == "name":
-                            str_val = self.sheet_name(str_val)
+                            str_val = self.string(str_val)
                         row[col] = str_val
                     count += 1
                     yield row
-        logging.info("Processed %d lines from %s", count, self.filename)
+        logging.info("Processed %d lines", count)
 
-    def __exit__(self, typ, message, traceback):
-        if typ is not None:
+    def __exit__(self, type, message, traceback):
+        if type is not None:
             logging.error("Reader: %s", message)
 
     def _configure(self, config):
-        self.sheet_number = get_option_value(config, "sheet_number", 0)
-        self.skip_rows = get_option_value(config, "skip_rows", 1)
+        self.sheet_number = Reader.get_option_value(config, "sheet_number", 0)
+        self.skip_rows = Reader.get_option_value(config, "skip_rows", 1)
         self.columns = {
-            "name": get_option_value(config, "name_column", 0),
-            "url": get_option_value(config, "url_column", 1),
-            "user": get_option_value(config, "username_column", 2),
-            "pass": get_option_value(config, "password_column", 3)
+            "name": Reader.get_option_value(config, "name_column", 0),
+            "url": Reader.get_option_value(config, "url_column", 1),
+            "username": Reader.get_option_value(config, "username_column", 2),
+            "password": Reader.get_option_value(config, "password_column", 3)
         }
-        str_re = get_option_value(config, "strings_match_re", r".*")
+        str_re = Reader.get_option_value(config,
+                                         "strings_match_re",
+                                         r"[\w\/\.,:;%\\\$\^#!@&\*\+\-]")
         self.string = Reader.string_filter(str_re)
         self.sheet_name = Reader.string_filter(r"[^\[\]:*?\/\\]")
+
+    @staticmethod
+    def get_option_value(options, option_name, default):
+        try:
+            return options[option_name]
+        except (KeyError, TypeError):
+            return default
+        except Exception as e:
+            logging.error("Error occured while getting option '%s': %s",
+                          option_name, e)
+            return default
 
     @staticmethod
     def string_filter(regexp):

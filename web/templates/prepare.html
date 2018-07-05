@@ -1,0 +1,46 @@
+{% extends "_base_config.html" %}
+{% block title %}Проверка файла - Ad statistics{% endblock %}
+{% block page %}prepare{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <p class="d-block">Убедитесь в корректности информации</p>
+</div>
+<div class="row justify-content-center">
+  <p class="d-block"><a class="btn btn-outline-dark mr-5" href="config">Назад</a></p>
+  <p class="d-block"><a class="btn btn-outline-dark" href="update">Продолжить</a></p>
+</div>
+{% for cls, table in { "btn-success": { "id": "table-added", "text": "text-success", "name": "Добавляемые", "values": separator.added, }, "btn-warning": { "id": "table-modified", "text": "text-warning", "name": "Изменяемые", "values": separator.modified, }, "btn-danger" : { "id": "table-deleted", "text": "text-danger", "name": "Удаляемые", "values": separator.removed } }.items() %}
+<div class="row justify-content-center my-3">
+  <a class="btn btn-lg btn-block {{ cls }} w-50" data-toggle="collapse" href="#{{ table["id"] }}" aria-expanded="false" aria-controls="{{ table["id"] }}">
+      {{ table["name"] }} ({{ table["values"]|length }})
+    </a>
+  </p>
+</div>
+<div class="row justify-content-center collapse" id="{{ table["id"] }}">
+  <table class="table table-striped table-sm">
+    <thead class="text-white bg-dark">
+      <tr>
+        <th class="w-20">Название</th>
+        <th class="w-60">URL</th>
+        <th class="w-10">Логин</th>
+        <th class="w-10">Пароль</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for url in table["values"] %}
+      <tr>
+        <td>{{ url["name"] }}</td>
+        <td>{{ url["url"] }}</td>
+        <td>{{ url["username"] }}</td>
+        <td>{{ url["password"] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+<div class="row justify-content-center mt-4">
+  <p class="d-block"><a class="btn btn-outline-dark mr-5" href="config">Назад</a></p>
+  <p class="d-block"><a class="btn btn-outline-dark" href="update">Продолжить</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+<div>
+<table class="table table-striped table-sm text-center" id="stat-table">
+  <thead class="text-white bg-dark">
+    <tr>
+      <th class="ad-stat-date">Дата</th>
+      <th class="ad-stat-starts">Старты</th>
+      <th class="ad-stat-shows">Показы</th>
+      <th class="ad-stat-clicks">Клики</th>
+      <th class="ad-stat-va">Видимость</th>
+      <th class="ad-stat-percent">%</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr>
+      <td class="ad-stat-date">{{ row.date }}</td>
+      <td class="ad-stat-starts">{{ row.starts | separate_thousands }}</td>
+      <td class="ad-stat-shows">{{ row.shows | separate_thousands }}</td>
+      <td class="ad-stat-clicks">{{ row.clicks | separate_thousands }}</td>
+      <td class="ad-stat-va">{{ row.viewability | separate_thousands }}</td>
+      <td class="ad-stat-percent">{{ row | starts_conversion }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot class="text-white bg-dark">
+    <tr>
+      <th class="ad-stat-date">Всего</th>
+      <th class="ad-stat-starts">0</th>
+      <th class="ad-stat-shows">0</th>
+      <th class="ad-stat-clicks">0</th>
+      <th class="ad-stat-va">0</th>
+      <th class="ad-stat-percent">0</th>
+    </tr>
+  </tfoot>
+</table>
+</div>
