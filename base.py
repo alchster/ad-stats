@@ -44,6 +44,10 @@ def get_command_line_options():
                         action="store_true",
                         default=False,
                         help="Start as daemon")
+    parser.add_argument("-g", "--gevent",
+                        action="store_true",
+                        default=False,
+                        help="Start through gevent WSGIServer")
     return parser.parse_args()
 
 
@@ -61,8 +65,8 @@ def read_config(filename):
 def make_server(config, debug=False):
     app = create_server(config, debug)
     app.wsgi_app = ProxyFix(app.wsgi_app)
-    app = HeaderRewriterFix(app, remove_headers=['Date'],
-                            add_headers=[('X-Powered-By', 'WSGI')])
+    app.wsgi_app = HeaderRewriterFix(app.wsgi_app, remove_headers=['Date'],
+                                     add_headers=[('X-Powered-By', 'WSGI')])
     return app
 
 

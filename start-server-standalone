@@ -1,5 +1,7 @@
 #!env/bin/python
 
+from gevent.pywsgi import WSGIServer
+
 from base import *
 
 
@@ -9,6 +11,10 @@ if __name__ == "__main__":
     config = read_config(options.config)
     opts = config.server_options()
     app = make_server(config, debug=options.verbose)
-    app.run(opts["listen_address"],
-            port=opts["listen_port"],
-            debug=options.verbose)
+    if options.gevent:
+        server = WSGIServer((opts["listen_address"], opts["listen_port"]), app)
+        server.serve_forever()
+    else:
+        app.run(opts["listen_address"],
+                port=opts["listen_port"],
+                debug=options.verbose)
