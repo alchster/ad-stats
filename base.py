@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!env/bin/python
 
 import logging
 import os
@@ -6,6 +6,8 @@ import sys
 
 import argparse
 import configparser
+
+from werkzeug.contrib.fixers import ProxyFix, HeaderRewriterFix
 
 from server.options import Options
 from server import create_server
@@ -56,20 +58,27 @@ def read_config(filename):
     return Options(config)
 
 
-def start_server(config, debug=False):
-    opts = config.server_options()
+def make_server(config, debug=False):
     app = create_server(config, debug)
-    app.run(opts["listen_address"],
-            port=opts["listen_port"],
-            debug=debug)
-
-
-def main():
-    options = get_command_line_options()
-    get_logger(options.quiet, options.verbose)
-    config = read_config(options.config)
-    start_server(config, debug=options.verbose)
+    app.wsgi_app = ProxyFix(app.wsgi_app)
+    app = HeaderRewriterFix(app, remove_headers=['Date'],
+                            add_headers=[('X-Powered-By', 'WSGI')])
+    return app
 
 
 if __name__ == "__main__":
-    main()
+    options = get_command_line_options()
+    get_logger(options.quiet, options.verbose)
+    config = read_config(options.config)
+    opts = config.server_options()
+    app = make_server(config, debug=options.verbose)
+    app.run(opts["listen_address"],
+            port=opts["listen_port"],
+            debug=options.verbose)
+
+
+def make_wsgi_app():
+    get_logger(False, False)
+    config = read_config('options.ini')
+    app = make_server(config, debug=False)
+    return app

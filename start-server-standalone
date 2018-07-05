@@ -1,0 +1,14 @@
+#!env/bin/python
+
+from base import *
+
+
+if __name__ == "__main__":
+    options = get_command_line_options()
+    get_logger(options.quiet, options.verbose)
+    config = read_config(options.config)
+    opts = config.server_options()
+    app = make_server(config, debug=options.verbose)
+    app.run(opts["listen_address"],
+            port=opts["listen_port"],
+            debug=options.verbose)
