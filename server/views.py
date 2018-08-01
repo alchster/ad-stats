@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, render_template, redirect, request, current_app, \
     Response, stream_with_context, jsonify, abort, send_file
 from jinja2 import TemplateNotFound
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InternalError
 from sqlalchemy import extract
 
 from .util.reader import Reader
@@ -106,13 +106,13 @@ def update():
                  password=url["password"])
         retries = 0
         # TODO?: move this to config
-        max_tries = 5
+        max_tries = 50
         while retries < max_tries:
             try:
                 session.add(u)
                 Data.create(session, u.table)
                 break
-            except IntegrityError:
+            except IntegrityError and InternalError:
                 logging.debug("Table '%s' is already exists", tn)
                 retries += 1
                 tn = "%s_%d" % (tablename(url["name"]), retries)

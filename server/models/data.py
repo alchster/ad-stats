@@ -26,7 +26,10 @@ class Data(object):
     @staticmethod
     def drop(session, name):
         logging.debug("Dropping table %s", name)
-        session.drop(Data.model(name))
+        try:
+            Data.model(name).__table__.drop(session.get_bind())
+        except Exception as e:
+            logging.info("Unable to drop table %s: %s" % (name, e))
 
     def __repr__(self):
         return "%s (%s, starts: %d, shows: %d, clicks: %d)" % \
